@@ -120,8 +120,10 @@ CREATE TABLE `safety_event` (
 
 
 
-CREATE TABLE workshop (
-    workshop_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE service_bay (
+    service_bay_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	bay_name VARCHAR(15) NOT NULL,
+	bay_status ENUM('IN USE', 'FREE', 'UNDER MAINTENANCE') DEFAULT 'FREE',
     depot_id INT NOT NULL,
     CONSTRAINT fk_depotid FOREIGN KEY (depot_id) REFERENCES depot(depot_id) 
 );
