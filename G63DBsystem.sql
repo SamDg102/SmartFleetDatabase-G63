@@ -131,13 +131,13 @@ CREATE TABLE service_bay (
 CREATE TABLE maintenance_job (
     job_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     VIN VARCHAR(17) NOT NULL,
-    bay_id TINYINT UNSIGNED NOT NULL,
+    service_bay_id TINYINT UNSIGNED NOT NULL,
     date_opened DATE NOT NULL,
     date_closed DATE NOT NULL,
     downtime_hours TIME NOT NULL,
     job_status ENUM ('NOT STARTED','IN PROGRESS','DONE') NOT NULL,
     CONSTRAINT fk_VIN FOREIGN KEY (VIN) REFERENCES vehicle(VIN),
-    CONSTRAINT fk_servicebayid FOREIGN KEY (bay_id) REFERENCES service_bay(bay_id)
+    CONSTRAINT fk_servicebayid FOREIGN KEY (service_bay_id) REFERENCES service_bay(service_bay_id)
 );
 
 CREATE TABLE mechanic_certification (
