@@ -131,13 +131,13 @@ CREATE TABLE service_bay (
 CREATE TABLE maintenance_job (
     job_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     VIN VARCHAR(17) NOT NULL,
-    workshop_id TINYINT UNSIGNED NOT NULL,
+    bay_id TINYINT UNSIGNED NOT NULL,
     date_opened DATE NOT NULL,
     date_closed DATE NOT NULL,
     downtime_hours TIME NOT NULL,
     job_status ENUM ('NOT STARTED','IN PROGRESS','DONE') NOT NULL,
     CONSTRAINT fk_VIN FOREIGN KEY (VIN) REFERENCES vehicle(VIN),
-    CONSTRAINT fk_workshopid FOREIGN KEY (workshop_id) REFERENCES workshop(workshop_id)
+    CONSTRAINT fk_servicebayid FOREIGN KEY (bay_id) REFERENCES service_bay(bay_id)
 );
 
 CREATE TABLE mechanic_certification (
@@ -159,9 +159,9 @@ CREATE TABLE alert_type (
 CREATE TABLE mechanic (
     mechanic_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
-    workshop_id TINYINT UNSIGNED NOT NULL,
+    depot_id INT NOT NULL,
     employment_status BOOLEAN NOT NULL,
-    CONSTRAINT fk_workshopidINmechanic FOREIGN KEY (workshop_id) REFERENCES workshop(workshop_id)
+    CONSTRAINT fk_depotidINmechanic FOREIGN KEY (depot_id) REFERENCES depot(depot_id)
 );
 
 CREATE TABLE mechanic_certification_record (
