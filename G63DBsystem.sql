@@ -6,44 +6,37 @@ USE `G63System`;
 -- ==========================================
 
 CREATE TABLE `driver_certification` (
-	`driver_certification_id` VARCHAR(100) NOT NULL,
+    `driver_certification_id` VARCHAR(100) NOT NULL,
     `driver_certification_name` VARCHAR(100) NOT NULL,
     PRIMARY KEY(`driver_certification_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `vehicle_category` (
-	`category_id` INT NOT NULL AUTO_INCREMENT,
-	`category_name` VARCHAR(100) NOT NULL,
-	PRIMARY KEY(`category_id`)
+    `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `category_name` VARCHAR(100) NOT NULL,
+    PRIMARY KEY(`category_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `depot` (
-	`depot_id` INT NOT NULL AUTO_INCREMENT,
+    `depot_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `depot_name` VARCHAR(100) NOT NULL,
     `depot_location` VARCHAR(255) NOT NULL,
     PRIMARY KEY(`depot_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `vehicle_status` (
-	`vehicle_status_id` INT NOT NULL AUTO_INCREMENT,
-    `vehicle_status_name` VARCHAR(100) NOT NULL,
-    `assignability` VARCHAR(255) NOT NULL,
-    PRIMARY KEY(`vehicle_status_id`)
-);
-
 CREATE TABLE `manufacturer` (
-	`manufacturer_id` INT NOT NULL AUTO_INCREMENT,
+    `manufacturer_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `manufacturer_name` VARCHAR(255),
     `contact_info` VARCHAR(100) NOT NULL,
     PRIMARY KEY(`manufacturer_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `severity_level` (
-	`severity_id` INT NOT NULL AUTO_INCREMENT,
-	`level_name` ENUM ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL') NOT NULL,
+    `severity_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `level_name` ENUM ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL') NOT NULL,
     `points_deducted` INT NOT NULL,
-	`deduction_condition` VARCHAR(255) NULL,
-	`additional_deduction` INT DEFAULT 0,
+    `deduction_condition` VARCHAR(255) NULL,
+    `additional_deduction` INT DEFAULT 0,
     PRIMARY KEY(`severity_id`)
 ) ENGINE=InnoDB;
 
@@ -98,22 +91,6 @@ CREATE TABLE `driver` (
     PRIMARY KEY (`driver_id`),
     FOREIGN KEY (`depot_id`) REFERENCES `depot`(`depot_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
-
-CREATE TABLE `vehicle` (
-	`VIN` VARCHAR(17) NOT NULL,
-    `vehicle_status_id` INT NOT NULL,
-    `category_id` INT NOT NULL,
-    `registration_number` VARCHAR(100) NOT NULL,
-    `manufacturer_id` INT NOT NULL,
-    `year_of_manufacture` INT NOT NULL,
-    `current_odometer` FLOAT NOT NULL,
-    `depot_location` VARCHAR(100) NOT NULL,
-    `status_name` VARCHAR(100) NOT NULL,
-    PRIMARY KEY(`VIN`),
-    FOREIGN KEY(`vehicle_status_id`) REFERENCES `vehicle_status`(`vehicle_status_id`),
-    FOREIGN KEY(`category_id`) REFERENCES `vehicle_category`(`category_id`),
-    FOREIGN KEY(`manufacturer_id`) REFERENCES `manufacturer`(`manufacturer_id`)
-);
 
 CREATE TABLE `vehicle` (
     `VIN` VARCHAR(17) NOT NULL,
