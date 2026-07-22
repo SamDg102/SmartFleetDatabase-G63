@@ -42,26 +42,26 @@ CREATE TABLE `severity_level` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `mechanic_certification` (
-    `mechanic_certification_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `mechanic_certification_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `mechanic_certification_name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`mechanic_certification_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `activity_type` (
-    `activity_type_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `activity_type_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `activity_type_name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`activity_type_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `alert_type` (
-    `alert_type_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `alert_type_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `alert_name` VARCHAR(255) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`alert_type_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `event_type` (
-    `event_type_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `event_type_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `event_type_name` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`event_type_id`)
 ) ENGINE=InnoDB;
@@ -70,7 +70,7 @@ CREATE TABLE `supplier` (
     `supplier_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `supplier_name` VARCHAR(100) NOT NULL,
     `contact_info` VARCHAR(100) NOT NULL,
-    `delivery_lead_time_days` INT UNSIGNED NULL,
+    `delivery_lead_time` VARCHAR(100) NULL,
     PRIMARY KEY (`supplier_id`)
 ) ENGINE=InnoDB;
 
@@ -95,9 +95,9 @@ CREATE TABLE `driver` (
     `depot_id` INT UNSIGNED NOT NULL,
     `employment_status` ENUM('ACTIVE', 'ON LEAVE', 'SUSPENDED', 'TERMINATED') NOT NULL DEFAULT 'ACTIVE',
     `emergency_contact_details` VARCHAR(100) NOT NULL,
+    `safety_hold` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`driver_id`),
-    FOREIGN KEY (`depot_id`) REFERENCES `depot`(`depot_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    INDEX `idx_employment_status` (`employment_status`)
+    FOREIGN KEY (`depot_id`) REFERENCES `depot`(`depot_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `vehicle` (
@@ -130,16 +130,13 @@ CREATE TABLE `driver_certification_record` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `vehicle_driver_assignment` (
-    `assignment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `driver_id` INT UNSIGNED NOT NULL,
     `VIN` VARCHAR(17) NOT NULL,
     `start_date` DATE NOT NULL,
     `end_date` DATE NULL,
-    PRIMARY KEY (`assignment_id`),
+    PRIMARY KEY (`driver_id`, `VIN`, `start_date`),
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    INDEX `idx_driver_active` (`driver_id`, `end_date`),
-    INDEX `idx_vin_active` (`VIN`, `end_date`)
 ) ENGINE=InnoDB;
 
 -- ==========================================
@@ -162,9 +159,9 @@ CREATE TABLE `safety_event` (
     `depot_id` INT UNSIGNED NOT NULL,
     `VIN` VARCHAR(17) NOT NULL,
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `odometer_reading` DECIMAL(10,1) NULL,
     `event_type_id` SMALLINT UNSIGNED NOT NULL,
     `severity_id` INT UNSIGNED NOT NULL,
+    `review_required` BOOLEAN DEFAULT FALSE,
     `review_status` ENUM('PENDING', 'COMPLETED') NOT NULL DEFAULT 'PENDING',
     `reviewer_comments` VARCHAR(255) NULL,
     PRIMARY KEY (`event_id`),
@@ -172,9 +169,7 @@ CREATE TABLE `safety_event` (
     FOREIGN KEY (`depot_id`) REFERENCES `depot`(`depot_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`event_type_id`) REFERENCES `event_type`(`event_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`severity_id`) REFERENCES `severity_level`(`severity_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    INDEX `idx_event_timestamp` (`timestamp`),
-    INDEX `idx_driver_event` (`driver_id`, `timestamp`)
+    FOREIGN KEY (`severity_id`) REFERENCES `severity_level`(`severity_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `coaching_record` (
@@ -197,7 +192,7 @@ CREATE TABLE `coaching_record` (
 -- ==========================================
 
 CREATE TABLE `service_bay` (
-    `service_bay_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `service_bay_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `bay_name` VARCHAR(15) NOT NULL,
     `bay_status` ENUM('IN USE', 'FREE', 'UNDER MAINTENANCE') DEFAULT 'FREE',
     `depot_id` INT UNSIGNED NOT NULL,
@@ -208,7 +203,7 @@ CREATE TABLE `service_bay` (
 CREATE TABLE `maintenance_job` (
     `job_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `VIN` VARCHAR(17) NOT NULL,
-    `service_bay_id` SMALLINT UNSIGNED NOT NULL,
+    `service_bay_id` TINYINT UNSIGNED NOT NULL,
     `date_opened` DATETIME NOT NULL,
     `date_closed` DATETIME NULL,
     `downtime_hours` DECIMAL(5,1) NULL,
@@ -216,8 +211,7 @@ CREATE TABLE `maintenance_job` (
     `total_cost` DECIMAL(12,2) NULL,
     PRIMARY KEY (`job_id`),
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`service_bay_id`) REFERENCES `service_bay`(`service_bay_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    INDEX `idx_job_status_date` (`job_status`, `date_opened`)
+    FOREIGN KEY (`service_bay_id`) REFERENCES `service_bay`(`service_bay_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `mechanic` (
@@ -231,7 +225,7 @@ CREATE TABLE `mechanic` (
 
 CREATE TABLE `mechanic_certification_record` (
     `record_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `mechanic_certification_id` SMALLINT UNSIGNED NOT NULL,
+    `mechanic_certification_id` TINYINT UNSIGNED NOT NULL,
     `mechanic_id` INT UNSIGNED NOT NULL,
     `issue_date` DATE NOT NULL,
     `expiration_date` DATE NOT NULL,
@@ -242,22 +236,20 @@ CREATE TABLE `mechanic_certification_record` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `maintenance_activity` (
-    `activity_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `job_id` INT UNSIGNED NOT NULL,
-    `activity_type_id` SMALLINT UNSIGNED NOT NULL,
+    `activity_id` TINYINT UNSIGNED NOT NULL,
+    `activity_type_id` TINYINT UNSIGNED NOT NULL,
     `diagnostic_result` VARCHAR(255) NOT NULL,
     `repeat_fault` BOOLEAN NOT NULL DEFAULT FALSE,
     `warranty_applicable` BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (`activity_id`),
-    INDEX `idx_job_id` (`job_id`),
-    UNIQUE KEY `uq_job_activity` (`job_id`, `activity_id`),
+    PRIMARY KEY (`job_id`, `activity_id`),
     FOREIGN KEY (`job_id`) REFERENCES `maintenance_job`(`job_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`activity_type_id`) REFERENCES `activity_type`(`activity_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `activity_required_certification` (
-    `mechanic_certification_id` SMALLINT UNSIGNED NOT NULL,
-    `activity_type_id` SMALLINT UNSIGNED NOT NULL,
+    `mechanic_certification_id` TINYINT UNSIGNED NOT NULL,
+    `activity_type_id` TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (`mechanic_certification_id`, `activity_type_id`),
     FOREIGN KEY (`mechanic_certification_id`) REFERENCES `mechanic_certification`(`mechanic_certification_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`activity_type_id`) REFERENCES `activity_type`(`activity_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -265,17 +257,18 @@ CREATE TABLE `activity_required_certification` (
 
 CREATE TABLE `mechanic_activity` (
     `mechanic_id` INT UNSIGNED NOT NULL,
-    `activity_id` INT UNSIGNED NOT NULL,
+    `job_id` INT UNSIGNED NOT NULL,
+    `activity_id` TINYINT UNSIGNED NOT NULL,
     `labour_hours` DECIMAL(4,1) NOT NULL,
-    PRIMARY KEY (`mechanic_id`, `activity_id`),
+    PRIMARY KEY (`mechanic_id`, `job_id`, `activity_id`),
     FOREIGN KEY (`mechanic_id`) REFERENCES `mechanic`(`mechanic_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`activity_id`) REFERENCES `maintenance_activity`(`activity_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (`job_id`, `activity_id`) REFERENCES `maintenance_activity`(`job_id`, `activity_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `predictive_alert` (
     `alert_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `VIN` VARCHAR(17) NOT NULL,
-   `alert_type_id` SMALLINT UNSIGNED NOT NULL,
+    `alert_type_id` TINYINT UNSIGNED NOT NULL,
     `job_id` INT UNSIGNED NULL,
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `action_taken` ENUM('ACKNOWLEDGED', 'SCHEDULED INSPECTION', 'ESCALATED', 'RESOLVED') NOT NULL,
@@ -298,7 +291,6 @@ CREATE TABLE `part` (
     `backup_supplier_id` INT UNSIGNED NULL,
     `backup_unit_cost` DECIMAL(12,2) NULL,
     `stock_quantity` INT UNSIGNED NOT NULL DEFAULT 0,
-    `reorder_level` INT UNSIGNED NOT NULL DEFAULT 5,
     PRIMARY KEY (`part_id`),
     UNIQUE KEY `uq_partNumber` (`part_number`),
     FOREIGN KEY (`primary_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -330,15 +322,15 @@ CREATE TABLE `part_order_detail` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `activity_part` (
-    `activity_id` INT UNSIGNED NOT NULL,
+    `job_id` INT UNSIGNED NOT NULL,
+    `activity_id` TINYINT UNSIGNED NOT NULL,
     `part_id` INT UNSIGNED NOT NULL,
-    `quantity_used` INT UNSIGNED NOT NULL,
+    `quantity_used` TINYINT UNSIGNED NOT NULL,
     `unit_cost_at_use` DECIMAL(12,2) NOT NULL COMMENT 'Snapshot of part unit cost at time of use, so historical job cost stays accurate even if part.primary_unit_cost changes later',
-    PRIMARY KEY (`activity_id`, `part_id`),
-    FOREIGN KEY (`activity_id`) REFERENCES `maintenance_activity`(`activity_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY (`job_id`, `activity_id`, `part_id`),
+    FOREIGN KEY (`job_id`, `activity_id`) REFERENCES `maintenance_activity`(`job_id`, `activity_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`part_id`) REFERENCES `part`(`part_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT `chk_unitCostAtUse` CHECK (`unit_cost_at_use` >= 0.0),
-    CONSTRAINT `chk_quantity_used` CHECK (`quantity_used` > 0)
+    CONSTRAINT `chk_unitCostAtUse` CHECK (`unit_cost_at_use` >= 0.0)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `warranty_claim` (
@@ -354,11 +346,195 @@ CREATE TABLE `warranty_claim` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `warranty_claim_part` (
-    `claim_part_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `claim_id` INT UNSIGNED NOT NULL,
-    `activity_id` INT UNSIGNED NOT NULL,
+    `job_id` INT UNSIGNED NOT NULL,
+    `activity_id` TINYINT UNSIGNED NOT NULL,
     `part_id` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`claim_part_id`),
+    PRIMARY KEY (`claim_id`, `job_id`, `activity_id`, `part_id`),
     FOREIGN KEY (`claim_id`) REFERENCES `warranty_claim`(`claim_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`activity_id`, `part_id`) REFERENCES `activity_part`(`activity_id`, `part_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (`job_id`, `activity_id`, `part_id`) REFERENCES `activity_part`(`job_id`, `activity_id`, `part_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+-- ==========================================
+-- 6. Business Rule Enforcement Triggers
+-- ==========================================
+
+DELIMITER $$
+
+-- Enforce XOR choice on warranty_claim (Insert)
+CREATE TRIGGER `trg_warrantyClaim_insert`
+BEFORE INSERT ON `warranty_claim`
+FOR EACH ROW
+BEGIN
+    IF (NEW.manufacturer_id IS NULL AND NEW.supplier_id IS NULL)
+       OR (NEW.manufacturer_id IS NOT NULL AND NEW.supplier_id IS NOT NULL) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Exactly one of manufacturer_id or supplier_id must be set on warranty_claim';
+    END IF;
+END$$
+
+-- Enforce XOR choice on warranty_claim (Update)
+CREATE TRIGGER `trg_warrantyClaim_update`
+BEFORE UPDATE ON `warranty_claim`
+FOR EACH ROW
+BEGIN
+    IF (NEW.manufacturer_id IS NULL AND NEW.supplier_id IS NULL)
+       OR (NEW.manufacturer_id IS NOT NULL AND NEW.supplier_id IS NOT NULL) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Exactly one of manufacturer_id or supplier_id must be set on warranty_claim';
+    END IF;
+END$$
+
+-- Auto-flag High/Critical safety events for review
+CREATE TRIGGER `trg_safetyEvent_autoReview`
+BEFORE INSERT ON `safety_event`
+FOR EACH ROW
+BEGIN
+    DECLARE sev_name VARCHAR(20);
+
+    SELECT `level_name` INTO sev_name
+    FROM `severity_level`
+    WHERE `severity_id` = NEW.severity_id;
+
+    IF sev_name IN ('HIGH', 'CRITICAL') THEN
+        SET NEW.review_required = TRUE;
+    END IF;
+END$$
+
+-- A critical event immediately blocks the driver from new assignments
+CREATE TRIGGER `trg_safetyEvent_criticalHold`
+AFTER INSERT ON `safety_event`
+FOR EACH ROW
+BEGIN
+    DECLARE sev_name VARCHAR(20);
+
+    SELECT `level_name` INTO sev_name
+    FROM `severity_level`
+    WHERE `severity_id` = NEW.severity_id;
+
+    IF sev_name = 'CRITICAL' THEN
+        UPDATE `driver` SET `safety_hold` = TRUE WHERE `driver_id` = NEW.driver_id;
+    END IF;
+END$$
+
+-- Release the hold once the triggering event's review is completed
+CREATE TRIGGER `trg_safetyEvent_reviewCompleted`
+AFTER UPDATE ON `safety_event`
+FOR EACH ROW
+BEGIN
+    DECLARE remaining_critical INT DEFAULT 0;
+
+    IF NEW.review_status = 'COMPLETED' AND OLD.review_status <> 'COMPLETED' THEN
+        SELECT COUNT(*) INTO remaining_critical
+        FROM `safety_event` se
+        JOIN `severity_level` sl ON sl.severity_id = se.severity_id
+        WHERE se.driver_id = NEW.driver_id
+          AND sl.level_name = 'CRITICAL'
+          AND se.review_status <> 'COMPLETED';
+
+        IF remaining_critical = 0 THEN
+            UPDATE `driver` SET `safety_hold` = FALSE WHERE `driver_id` = NEW.driver_id;
+        END IF;
+    END IF;
+END$$
+
+-- Completing assigned retraining also clears the hold
+CREATE TRIGGER `trg_coaching_releaseHold`
+AFTER UPDATE ON `coaching_record`
+FOR EACH ROW
+BEGIN
+    IF NEW.coaching_type = 'RETRAINING'
+       AND NEW.status = 'COMPLETED'
+       AND OLD.status <> 'COMPLETED' THEN
+        UPDATE `driver` SET `safety_hold` = FALSE WHERE `driver_id` = NEW.driver_id;
+    END IF;
+END$$
+
+-- Auto Snapshot unit_cost_at_use and reduce stock on activity_part insert
+CREATE TRIGGER `trg_activityPart_beforeInsert`
+BEFORE INSERT ON `activity_part`
+FOR EACH ROW
+BEGIN
+    IF NEW.unit_cost_at_use IS NULL THEN
+        SET NEW.unit_cost_at_use = (
+            SELECT `primary_unit_cost` 
+            FROM `part` 
+            WHERE `part_id` = NEW.part_id
+        );
+    END IF;
+END$$
+
+CREATE TRIGGER `trg_activityPart_afterInsert`
+AFTER INSERT ON `activity_part`
+FOR EACH ROW
+BEGIN
+    UPDATE `part`
+    SET `stock_quantity` = `stock_quantity` - NEW.quantity_used
+    WHERE `part_id` = NEW.part_id;
+END$$
+
+-- Core assignment guard: vehicle availability, driver status, certifications, safety score
+CREATE TRIGGER `trg_vehicleAssignment_check`
+BEFORE INSERT ON `vehicle_driver_assignment`
+FOR EACH ROW
+BEGIN
+    DECLARE v_status VARCHAR(30);
+    DECLARE v_category_id INT UNSIGNED;
+    DECLARE d_status VARCHAR(30);
+    DECLARE d_hold BOOLEAN;
+    DECLARE missing_certs INT DEFAULT 0;
+    DECLARE latest_score SMALLINT;
+
+    -- Vehicle must be available for assignment
+    SELECT `vehicle_status`, `category_id` INTO v_status, v_category_id
+    FROM `vehicle` WHERE `VIN` = NEW.VIN;
+
+    IF v_status IN ('UNDER MAINTENANCE', 'OUT OF SERVICE') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Cannot assign a vehicle that is under maintenance or out of service';
+    END IF;
+
+    -- Driver must be an active employee and not on a safety hold
+    SELECT `employment_status`, `safety_hold` INTO d_status, d_hold
+    FROM `driver` WHERE `driver_id` = NEW.driver_id;
+
+    IF d_status <> 'ACTIVE' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Cannot assign a vehicle to a driver who is not an active employee';
+    END IF;
+
+    IF d_hold = TRUE THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Driver is on safety hold following a critical event and cannot be assigned a vehicle';
+    END IF;
+
+    -- Driver must hold ALL required certifications for the vehicle category, unexpired
+    SELECT COUNT(*) INTO missing_certs
+    FROM `category_required_certification` crc
+    WHERE crc.category_id = v_category_id
+      AND NOT EXISTS (
+          SELECT 1 FROM `driver_certification_record` dcr
+          WHERE dcr.driver_id = NEW.driver_id
+            AND dcr.driver_certification_id = crc.driver_certification_id
+            AND dcr.expiration_date >= CURDATE()
+      );
+
+    IF missing_certs > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Driver lacks a required, unexpired certification for this vehicle category';
+    END IF;
+
+    -- Driver's most recent monthly safety score must be above 50
+    SELECT final_score INTO latest_score
+    FROM `monthly_safety_score`
+    WHERE driver_id = NEW.driver_id
+    ORDER BY score_month DESC
+    LIMIT 1;
+
+    IF latest_score IS NOT NULL AND latest_score <= 50 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Driver safety score is 50 or below; safety training required before assignment';
+    END IF;
+END$$
+
+DELIMITER ;
