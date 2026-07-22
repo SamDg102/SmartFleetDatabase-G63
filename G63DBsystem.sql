@@ -59,6 +59,12 @@ CREATE TABLE `alert_type` (
     PRIMARY KEY (`alert_type_id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `event_type` (
+    `event_type_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `event_type_name` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`event_type_id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `supplier` (
     `supplier_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `supplier_name` VARCHAR(100) NOT NULL,
@@ -97,6 +103,7 @@ CREATE TABLE `vehicle` (
     `category_id` INT UNSIGNED NOT NULL,
     `registration_number` VARCHAR(100) NOT NULL,
     `manufacturer_id` INT UNSIGNED NOT NULL,
+    `model` VARCHAR(100) NOT NULL,
     `year_of_manufacture` INT NOT NULL,
     `current_odometer` FLOAT NOT NULL,
     `depot_id` INT UNSIGNED NOT NULL,
@@ -110,8 +117,9 @@ CREATE TABLE `vehicle` (
 CREATE TABLE `driver_certification_record` (
     `driver_certification_id` VARCHAR(100) NOT NULL,
     `driver_id` INT UNSIGNED NOT NULL,
+    `issue_date` DATE NOT NULL,
     `expiration_date` DATE NOT NULL,
-    PRIMARY KEY (`driver_certification_id`, `driver_id`),
+    PRIMARY KEY (`driver_certification_id`, `driver_id`, `issue_date`),
     FOREIGN KEY (`driver_certification_id`) REFERENCES `driver_certification`(`driver_certification_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -133,7 +141,7 @@ CREATE TABLE `vehicle_driver_assignment` (
 CREATE TABLE `monthly_safety_score` (
     `driver_id` INT UNSIGNED NOT NULL,
     `score_month` DATE NOT NULL,
-    `final_score` TINYINT UNSIGNED NOT NULL DEFAULT 100,
+    `final_score` SMALLINT NOT NULL DEFAULT 100,
     `action_required` VARCHAR(255) NULL,
     PRIMARY KEY (`driver_id`, `score_month`),
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -145,7 +153,7 @@ CREATE TABLE `safety_event` (
     `depot_id` INT UNSIGNED NOT NULL,
     `VIN` VARCHAR(17) NOT NULL,
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `event_type` VARCHAR(100) NOT NULL,
+    `event_type_id` TINYINT UNSIGNED NOT NULL,
     `severity_id` INT UNSIGNED NOT NULL,
     `review_required` BOOLEAN DEFAULT FALSE,
     `reviewer_comments` VARCHAR(255) NULL,
@@ -153,9 +161,24 @@ CREATE TABLE `safety_event` (
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`depot_id`) REFERENCES `depot`(`depot_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`event_type_id`) REFERENCES `event_type`(`event_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`severity_id`) REFERENCES `severity_level`(`severity_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE `coaching_record` (
+    `coaching_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `driver_id` INT UNSIGNED NOT NULL,
+    `trigger_event_id` INT UNSIGNED NULL COMMENT 'safety_event that triggered this coaching, if any',
+    `score_month` DATE NULL COMMENT 'monthly_safety_score period that triggered this coaching, if any',
+    `coaching_type` ENUM('COACHING', 'RETRAINING') NOT NULL,
+    `assigned_date` DATE NOT NULL,
+    `completion_date` DATE NULL,
+    `outcome` VARCHAR(255) NULL,
+    `status` ENUM('PENDING', 'IN PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
+    PRIMARY KEY (`coaching_id`),
+    FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`trigger_event_id`) REFERENCES `safety_event`(`event_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
 -- ==========================================
 -- 4. Maintenance & Workshop Operations
 -- ==========================================
@@ -177,6 +200,7 @@ CREATE TABLE `maintenance_job` (
     `date_closed` DATETIME NOT NULL,
     `downtime_hours` DECIMAL(5,1) NOT NULL,
     `job_status` ENUM('NOT STARTED', 'IN PROGRESS', 'DONE') NOT NULL DEFAULT 'NOT STARTED',
+    `total_cost` DECIMAL(12,2) NULL,
     PRIMARY KEY (`job_id`),
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`service_bay_id`) REFERENCES `service_bay`(`service_bay_id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -194,6 +218,7 @@ CREATE TABLE `mechanic` (
 CREATE TABLE `mechanic_certification_record` (
     `mechanic_certification_id` TINYINT UNSIGNED NOT NULL,
     `mechanic_id` INT UNSIGNED NOT NULL,
+    `issue_date` DATE NOT NULL,
     `expiration_date` DATE NOT NULL,
     PRIMARY KEY (`mechanic_certification_id`, `mechanic_id`),
     FOREIGN KEY (`mechanic_certification_id`) REFERENCES `mechanic_certification`(`mechanic_certification_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -249,11 +274,14 @@ CREATE TABLE `predictive_alert` (
 
 CREATE TABLE `part` (
     `part_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `part_number` VARCHAR(100) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
     `primary_supplier_id` INT UNSIGNED NOT NULL,
     `primary_unit_cost` DECIMAL(12,2) NOT NULL,
     `backup_supplier_id` INT UNSIGNED NULL,
     `backup_unit_cost` DECIMAL(12,2) NULL,
     PRIMARY KEY (`part_id`),
+    UNIQUE KEY `uq_partNumber` (`part_number`),
     FOREIGN KEY (`primary_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`backup_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT `chk_primaryUnitCost` CHECK (`primary_unit_cost` >= 0.0),
@@ -265,6 +293,7 @@ CREATE TABLE `part_order` (
     `supplier_id` INT UNSIGNED NOT NULL,
     `order_date` DATE NOT NULL,
     `expected_delivery_date` DATE NOT NULL,
+    `actual_delivery_date` DATE NULL,
     `order_status` ENUM('PREPARING', 'IN TRANSIT', 'DELIVERED', 'CANCELED') DEFAULT 'PREPARING',
     PRIMARY KEY (`order_id`),
     FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -293,16 +322,26 @@ CREATE TABLE `activity_part` (
 
 CREATE TABLE `warranty_claim` (
     `claim_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `job_id` INT UNSIGNED NOT NULL,
-    `activity_id` TINYINT UNSIGNED NOT NULL,
-    `part_id` INT UNSIGNED NOT NULL,
     `claim_type` ENUM('Standard Warranty', 'Component Warranty', 'Parts Warranty', 'Defect Campaigns') NULL,
     `claim_date` DATE NULL,
     `claim_status` ENUM('SUBMITTED', 'CLARIFICATION NEEDED', 'APPROVED', 'REJECTED') DEFAULT 'SUBMITTED',
     `manufacturer_id` INT UNSIGNED NULL,
     `supplier_id` INT UNSIGNED NULL,
     PRIMARY KEY (`claim_id`),
-    FOREIGN KEY (`job_id`, `activity_id`, `part_id`) REFERENCES `activity_part`(`job_id`, `activity_id`, `part_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer`(`manufacturer_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `chk_warrantySource` CHECK (
+        (`manufacturer_id` IS NOT NULL AND `supplier_id` IS NULL)
+        OR (`manufacturer_id` IS NULL AND `supplier_id` IS NOT NULL)
+    )
+) ENGINE=InnoDB;
+
+CREATE TABLE `warranty_claim_part` (
+    `claim_id` INT UNSIGNED NOT NULL,
+    `job_id` INT UNSIGNED NOT NULL,
+    `activity_id` TINYINT UNSIGNED NOT NULL,
+    `part_id` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`claim_id`, `job_id`, `activity_id`, `part_id`),
+    FOREIGN KEY (`claim_id`) REFERENCES `warranty_claim`(`claim_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`job_id`, `activity_id`, `part_id`) REFERENCES `activity_part`(`job_id`, `activity_id`, `part_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
