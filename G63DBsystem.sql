@@ -330,12 +330,35 @@ CREATE TABLE `warranty_claim` (
     `supplier_id` INT UNSIGNED NULL,
     PRIMARY KEY (`claim_id`),
     FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer`(`manufacturer_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT `chk_warrantySource` CHECK (
-        (`manufacturer_id` IS NOT NULL AND `supplier_id` IS NULL)
-        OR (`manufacturer_id` IS NULL AND `supplier_id` IS NOT NULL)
+    FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE
     )
 ) ENGINE=InnoDB;
+
+DELIMITER $$
+
+CREATE TRIGGER `trg_warrantyClaim_insert`
+BEFORE INSERT ON `warranty_claim`
+FOR EACH ROW
+BEGIN
+    IF (NEW.manufacturer_id IS NULL AND NEW.supplier_id IS NULL)
+       OR (NEW.manufacturer_id IS NOT NULL AND NEW.supplier_id IS NOT NULL) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Exactly one of manufacturer_id or supplier_id must be set on warranty_claim';
+    END IF;
+END$$
+
+CREATE TRIGGER `trg_warrantyClaim_update`
+BEFORE UPDATE ON `warranty_claim`
+FOR EACH ROW
+BEGIN
+    IF (NEW.manufacturer_id IS NULL AND NEW.supplier_id IS NULL)
+       OR (NEW.manufacturer_id IS NOT NULL AND NEW.supplier_id IS NOT NULL) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Exactly one of manufacturer_id or supplier_id must be set on warranty_claim';
+    END IF;
+END$$
+
+DELIMITER ;
 
 CREATE TABLE `warranty_claim_part` (
     `claim_id` INT UNSIGNED NOT NULL,
