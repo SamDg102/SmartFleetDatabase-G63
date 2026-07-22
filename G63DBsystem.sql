@@ -136,7 +136,7 @@ CREATE TABLE `vehicle_driver_assignment` (
     `end_date` DATE NULL,
     PRIMARY KEY (`driver_id`, `VIN`, `start_date`),
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- ==========================================
@@ -159,7 +159,7 @@ CREATE TABLE `safety_event` (
     `depot_id` INT UNSIGNED NOT NULL,
     `VIN` VARCHAR(17) NOT NULL,
     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `event_type_id` SMALLINT UNSIGNED NOT NULL,
+    `event_type_id` TINYINT UNSIGNED NOT NULL,
     `severity_id` INT UNSIGNED NOT NULL,
     `review_required` BOOLEAN DEFAULT FALSE,
     `review_status` ENUM('PENDING', 'COMPLETED') NOT NULL DEFAULT 'PENDING',
@@ -187,6 +187,7 @@ CREATE TABLE `coaching_record` (
     FOREIGN KEY (`trigger_event_id`) REFERENCES `safety_event`(`event_id`) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (`driver_id`, `score_month`) REFERENCES `monthly_safety_score`(`driver_id`, `score_month`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
 -- ==========================================
 -- 4. Maintenance & Workshop Operations
 -- ==========================================
@@ -326,7 +327,7 @@ CREATE TABLE `activity_part` (
     `activity_id` TINYINT UNSIGNED NOT NULL,
     `part_id` INT UNSIGNED NOT NULL,
     `quantity_used` TINYINT UNSIGNED NOT NULL,
-    `unit_cost_at_use` DECIMAL(12,2) NOT NULL COMMENT 'Snapshot of part unit cost at time of use, so historical job cost stays accurate even if part.primary_unit_cost changes later',
+    `unit_cost_at_use` DECIMAL(12,2) NULL COMMENT 'Snapshot of part unit cost at time of use',
     PRIMARY KEY (`job_id`, `activity_id`, `part_id`),
     FOREIGN KEY (`job_id`, `activity_id`) REFERENCES `maintenance_activity`(`job_id`, `activity_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`part_id`) REFERENCES `part`(`part_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -445,22 +446,31 @@ FOR EACH ROW
 BEGIN
     IF NEW.coaching_type = 'RETRAINING'
        AND NEW.status = 'COMPLETED'
-       AND OLD.status <> 'COMPLETED' THEN
+       AND (OLD.status IS NULL OR OLD.status <> 'COMPLETED') THEN
         UPDATE `driver` SET `safety_hold` = FALSE WHERE `driver_id` = NEW.driver_id;
     END IF;
 END$$
 
--- Auto Snapshot unit_cost_at_use and reduce stock on activity_part insert
+-- Auto Snapshot unit_cost_at_use and Check Stock availability BEFORE insert
 CREATE TRIGGER `trg_activityPart_beforeInsert`
 BEFORE INSERT ON `activity_part`
 FOR EACH ROW
 BEGIN
+    DECLARE current_stock INT UNSIGNED;
+    DECLARE base_cost DECIMAL(12,2);
+
+    SELECT `stock_quantity`, `primary_unit_cost` 
+    INTO current_stock, base_cost
+    FROM `part` 
+    WHERE `part_id` = NEW.part_id;
+
+    IF current_stock < NEW.quantity_used THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Not enough stock available for this part';
+    END IF;
+
     IF NEW.unit_cost_at_use IS NULL THEN
-        SET NEW.unit_cost_at_use = (
-            SELECT `primary_unit_cost` 
-            FROM `part` 
-            WHERE `part_id` = NEW.part_id
-        );
+        SET NEW.unit_cost_at_use = base_cost;
     END IF;
 END$$
 
@@ -471,6 +481,16 @@ BEGIN
     UPDATE `part`
     SET `stock_quantity` = `stock_quantity` - NEW.quantity_used
     WHERE `part_id` = NEW.part_id;
+END$$
+
+-- Return parts to the workshop
+CREATE TRIGGER `trg_activityPart_afterDelete`
+AFTER DELETE ON `activity_part`
+FOR EACH ROW
+BEGIN
+    UPDATE `part`
+    SET `stock_quantity` = `stock_quantity` + OLD.quantity_used
+    WHERE `part_id` = OLD.part_id;
 END$$
 
 -- Core assignment guard: vehicle availability, driver status, certifications, safety score
@@ -489,7 +509,7 @@ BEGIN
     SELECT `vehicle_status`, `category_id` INTO v_status, v_category_id
     FROM `vehicle` WHERE `VIN` = NEW.VIN;
 
-    IF v_status IN ('UNDER MAINTENANCE', 'OUT OF SERVICE') THEN
+    IF v_status IN ('UNDER MAINTENANCE', 'OUT OF SERVICE', 'RETIRED') THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Error: Cannot assign a vehicle that is under maintenance or out of service';
     END IF;
@@ -508,7 +528,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Error: Driver is on safety hold following a critical event and cannot be assigned a vehicle';
     END IF;
 
-    -- Driver must hold ALL required certifications for the vehicle category, unexpired
+    -- Driver must hold ALL required certifications for the vehicle category, and MUST BE UNEXPIRED on assignment start date
     SELECT COUNT(*) INTO missing_certs
     FROM `category_required_certification` crc
     WHERE crc.category_id = v_category_id
@@ -516,7 +536,8 @@ BEGIN
           SELECT 1 FROM `driver_certification_record` dcr
           WHERE dcr.driver_id = NEW.driver_id
             AND dcr.driver_certification_id = crc.driver_certification_id
-            AND dcr.expiration_date >= CURDATE()
+            AND dcr.issue_date <= NEW.start_date
+            AND dcr.expiration_date >= NEW.start_date
       );
 
     IF missing_certs > 0 THEN
