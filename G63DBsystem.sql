@@ -128,7 +128,7 @@ CREATE TABLE `vehicle_driver_assignment` (
     `driver_id` INT UNSIGNED NOT NULL,
     `VIN` VARCHAR(17) NOT NULL,
     `start_date` DATE NOT NULL,
-    `end_date` DATE NOT NULL,
+    `end_date` DATE NULL,
     PRIMARY KEY (`driver_id`, `VIN`, `start_date`),
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`VIN`) REFERENCES `vehicle`(`VIN`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -146,6 +146,7 @@ CREATE TABLE `monthly_safety_score` (
     PRIMARY KEY (`driver_id`, `score_month`),
     FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+    CONSTRAINT `chk_finalScore` CHECK (`final_score` BETWEEN 0 AND 100)
 
 CREATE TABLE `safety_event` (
     `event_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -197,8 +198,8 @@ CREATE TABLE `maintenance_job` (
     `VIN` VARCHAR(17) NOT NULL,
     `service_bay_id` TINYINT UNSIGNED NOT NULL,
     `date_opened` DATETIME NOT NULL,
-    `date_closed` DATETIME NOT NULL,
-    `downtime_hours` DECIMAL(5,1) NOT NULL,
+    `date_closed` DATETIME NULL,
+    `downtime_hours` DECIMAL(5,1) NULL,
     `job_status` ENUM('NOT STARTED', 'IN PROGRESS', 'DONE') NOT NULL DEFAULT 'NOT STARTED',
     `total_cost` DECIMAL(12,2) NULL,
     PRIMARY KEY (`job_id`),
@@ -220,7 +221,7 @@ CREATE TABLE `mechanic_certification_record` (
     `mechanic_id` INT UNSIGNED NOT NULL,
     `issue_date` DATE NOT NULL,
     `expiration_date` DATE NOT NULL,
-    PRIMARY KEY (`mechanic_certification_id`, `mechanic_id`),
+    PRIMARY KEY (`mechanic_certification_id`, `mechanic_id`, `issue_date`),
     FOREIGN KEY (`mechanic_certification_id`) REFERENCES `mechanic_certification`(`mechanic_certification_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`mechanic_id`) REFERENCES `mechanic`(`mechanic_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
