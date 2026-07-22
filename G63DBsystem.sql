@@ -144,9 +144,9 @@ CREATE TABLE `monthly_safety_score` (
     `final_score` SMALLINT NOT NULL DEFAULT 100,
     `action_required` VARCHAR(255) NULL,
     PRIMARY KEY (`driver_id`, `score_month`),
-    FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB;
+    FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `chk_finalScore` CHECK (`final_score` BETWEEN 0 AND 100)
+) ENGINE=InnoDB;
 
 CREATE TABLE `safety_event` (
     `event_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
