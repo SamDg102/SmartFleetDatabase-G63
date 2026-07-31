@@ -344,6 +344,8 @@ CREATE TABLE `warranty_claim` (
     FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer`(`manufacturer_id`) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (`supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+-- Constraint: XOR (manufacturer_id, supplier_id)
+-- A warranty claim must be linked to either a Manufacturer OR a Supplier, but never both or neither.
 
 CREATE TABLE `warranty_claim_part` (
     `claim_id` INT UNSIGNED NOT NULL,
