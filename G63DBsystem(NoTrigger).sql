@@ -356,3 +356,16 @@ CREATE TABLE `warranty_claim_part` (
     FOREIGN KEY (`claim_id`) REFERENCES `warranty_claim`(`claim_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`job_id`, `activity_id`, `part_id`) REFERENCES `activity_part`(`job_id`, `activity_id`, `part_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+-- ==========================================
+-- 6. Authentication
+-- ==========================================
+
+CREATE TABLE `user_account`(
+    `account_id` INT UNSIGNED NOT NULL,
+    `driver_id` INT UNSIGNED NOT NULL,
+    `username` VARCHAR(255) NOT NULL UNIQUE,
+    `hash_pass` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`account_id`),
+    FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`)
+) ENGINE=InnoDB;
