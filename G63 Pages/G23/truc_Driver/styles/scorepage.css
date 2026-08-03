@@ -1,0 +1,125 @@
+:root {
+    --color-black: #000000;
+    --color-green-matcha: #dffedf;
+    --color-green-deep: #12a800;
+    --color-green-basic: #18d600;
+    --color-white: #ffffff;
+    --color-grey-line: #ececec;
+    --color-grey-text: #6b6b6b;
+    --color-yellow: #fcd703;
+    --color-red: #fa0720;
+    
+    --navbar-width: 230px;
+    --radius-large: 20px;
+    --radius-medium: 14px;
+    --radius-small: 8px;
+    --minibox-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background: var(--color-white);
+    color: var(--color-black);
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+hr {
+    color: var(--color-grey-line);
+}
+
+/* content of score page*/
+/* section of the miniboxes*/
+.scorepage {
+    margin-left: var(--navbar-width);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scorepage hr {
+    margin: 5px 0 30px 0;
+}
+
+.miniboxes {
+    display: grid;
+    grid-template-columns: repeat(4, 23%);
+    margin-bottom: 30px;
+    gap: 22px;
+}
+
+.miniboxes div {
+    background: var(--color-white);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--minibox-shadow);
+    padding: 20px;
+    display: grid;
+    grid-auto-flow: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.miniboxes div h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-green-deep);
+}
+
+/* section of monthly score history */
+.scorehistory h3{
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--color-grey-text);
+}
+
+/*table */
+.scorehistory table {
+    background: var(--color-white);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--color-grey-line);
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.scorehistory th {
+    text-align: left;
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.scorehistory td {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--color-grey-line);
+}
+
+.scorehistory tr:hover td {
+    background: var(--color-green-matcha);
+}
+
+footer {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-grey-text);
+    font-style: italic;
+    margin-top: auto;
+    text-align: center;
+    padding-top: 20px;
+}
