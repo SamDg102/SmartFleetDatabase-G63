@@ -12,5 +12,5 @@
             <li class="<?= $currentPage == 'trainingpage' ? 'activepage' : '' ?>"><a href="trainingpage.php"><i class="fa-solid fa-chalkboard"></i>Training Course</a></li>
         </ul>
     </nav>
-    <div class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+    <div class="logout"><a href="../logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
 </div>

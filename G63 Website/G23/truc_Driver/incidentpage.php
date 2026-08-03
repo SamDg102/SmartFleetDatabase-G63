@@ -2,7 +2,6 @@
 session_start();
 
 require_once 'includes/conndb.php';
-include 'includes/navbar.php';
 include '../function.php';
 
 checkin('driver');
