@@ -1,6 +1,6 @@
 <?php
 
-include 'G23/connect.php';
+require_once 'connect.php';
 
 if(isset($_POST['sign_up'])){
     $email = $_POST['email'];

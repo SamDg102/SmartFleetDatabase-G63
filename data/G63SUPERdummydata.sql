@@ -13290,3 +13290,23 @@ INSERT INTO `warranty_claim_part` (`claim_id`, `job_id`, `activity_id`, `part_id
 (168, 2211, 1, 10),
 (169, 2225, 2, 5),
 (170, 2319, 1, 23);
+
+-- Add user login, pass: 123123
+
+INSERT INTO `users` (`email`, `password`, `role`) VALUES
+('fleetss1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
+('fleetss2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
+('fleetss3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
+('driver1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'driver'),
+('driver2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'driver'),
+('driver3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'driver'),
+('wmanager1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'workshop manager'),
+('wmanager2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'workshop manager'),
+('wmanager3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'workshop manager'),
+('mechanic1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'mechanic'),
+('mechanic2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'mechanic'),
+('mechanic3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'mechanic'),
+('admin1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'admin'),
+('admin2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'admin'),
+('admin3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'admin');
+
