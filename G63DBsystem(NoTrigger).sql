@@ -361,11 +361,8 @@ CREATE TABLE `warranty_claim_part` (
 -- 6. Authentication
 -- ==========================================
 
-CREATE TABLE `user_account`(
-    `account_id` INT UNSIGNED NOT NULL,
-    `driver_id` INT UNSIGNED NOT NULL,
-    `username` VARCHAR(255) NOT NULL UNIQUE,
-    `hash_pass` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`account_id`),
-    FOREIGN KEY (`driver_id`) REFERENCES `driver`(`driver_id`)
-) ENGINE=InnoDB;
+CREATE TABLE `users` (
+  `email` varchar(255) NOT NULL PRIMARY KEY, 
+  `password` varchar(255) NOT NULL,
+  `role` enum('fleet safety staff', 'driver', 'workshop manager', 'mechanic', 'admin') NOT NULL DEFAULT 'driver'
+) ;
