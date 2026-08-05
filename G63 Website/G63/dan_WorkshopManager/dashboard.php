@@ -1,6 +1,9 @@
 <?php
 
 require __DIR__ . '/config/db.php';
+require '../function.php';
+
+checkin('workshop manager');
 
 $pageTitle = 'Workshop Dashboard';
 $pageCss = 'dashboard';

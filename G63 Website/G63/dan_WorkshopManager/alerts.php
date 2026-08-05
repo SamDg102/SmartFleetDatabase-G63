@@ -1,5 +1,10 @@
 <?php
 require __DIR__ . '/config/db.php';
+include '../function.php';
+
+checkin('workshop manager');
+
+
 $pageTitle = 'Predictive Alerts';
 $pageCss = 'alerts';
 $currentPage = 'alerts';

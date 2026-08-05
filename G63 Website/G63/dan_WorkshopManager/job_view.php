@@ -1,6 +1,11 @@
 <?php
 require __DIR__ . '/config/db.php';
 require __DIR__ . '/models/MaintenanceJob.php';
+require '../function.php';
+
+checkin('workshop manager');
+
+
 $pageTitle = 'Maintenance Job';
 $pageCss = 'maintenancejobs';
 $currentPage = 'maintenancejobs';
