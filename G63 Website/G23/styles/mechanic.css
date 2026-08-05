@@ -1,0 +1,115 @@
+:root {
+    --color-black: #000000;
+    --color-green-matcha: #dffedf;
+    --color-green-deep: #12a800;
+    --color-green-basic: #18d600;
+    --color-white: #ffffff;
+    --color-grey-line: #ececec;
+    --color-grey-text: #6b6b6b;
+    --color-yellow: #fcd703;
+    --color-red: #fa0720;
+    
+    --navbar-width: 230px;
+    --radius-large: 20px;
+    --radius-medium: 14px;
+    --radius-small: 8px;
+    --minibox-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background: var(--color-white);
+    color: var(--color-black);
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+hr {
+    color: var(--color-grey-line);
+    margin: 5px 0 30px 0;
+}
+
+main {
+    margin-left: 230px;
+}
+
+/* header */
+header {
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 34px 40px;
+    border-radius: 0 0 var(--radius-large) var(--radius-large);
+}
+
+header h1 {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* content sections */
+section {
+    padding: 30px 40px;
+}
+
+section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--color-grey-text);
+}
+
+/* table */
+table {
+    background: var(--color-white);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--color-grey-line);
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th {
+    text-align: left;
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--color-grey-line);
+}
+
+tr:hover td {
+    background: var(--color-green-matcha);
+}
+
+footer {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-grey-text);
+    font-style: italic;
+    margin-top: auto;
+    text-align: center;
+    padding-top: 20px;
+}

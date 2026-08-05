@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Fleet Safety Operations Staff dashboard of G63 Fleet Management System">
+        <meta name="keywords" content="Safety, Fleet, Staff">
+        <meta name="author" content="Dang Nguyen Xuan Truc">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>G63 Safety Staff Dashboard</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="styles/staff.css">
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-truck"></i>
+                <span>G63 Fleet<br>Management</span>
+            </div>
+            <h1>Safety Staff</h1>
+            <nav>
+                <ul>
+                    <li class="activepage"><a href="#"><i class="fa-solid fa-car-burst"></i>Safety Event Log</a></li>
+                    <li><a href="#"><i class="fa-solid fa-star"></i>Monthly Safety Scores</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chalkboard"></i>Coaching &amp; Retraining</a></li>
+                    <li><a href="#"><i class="fa-solid fa-id-card"></i>Driver Certifications</a></li>
+                    <li><a href="#"><i class="fa-solid fa-truck-fast"></i>Driver &amp; Vehicle Assignment</a></li>
+                </ul>
+            </nav>
+            <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+        </div>
+
+        <main class="scorepage">
+            <div class="topbar">
+                <div>
+                    <h1>Safety Event Log</h1>
+                    <p>Sự kiện hành vi lái xe do hệ thống telematics ghi nhận — Tháng 05/2024</p>
+                </div>
+                <button class="btn-primary"><i class="fa-solid fa-plus"></i>Record Manual Event</button>
+            </div>
+            <hr>
+
+            <section class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-list"></i></div>
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Total Events This Month</div>
+                </div>
+                <div class="stat-card alert">
+                    <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card alert">
+                    <div class="stat-icon"><i class="fa-solid fa-hand"></i></div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Drivers on Safety Hold</div>
+                </div>
+                <div class="stat-card warn">
+                    <div class="stat-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Coaching Pending</div>
+                </div>
+            </section>
+
+            <div class="filter-bar">
+                <select>
+                    <option>All Depots</option>
+                    <option>Ha Noi Depot</option>
+                    <option>Da Nang Depot</option>
+                    <option>Ho Chi Minh City Depot</option>
+                    <option>Can Tho Depot</option>
+                </select>
+                <select>
+                    <option>All Severities</option>
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                    <option>Critical</option>
+                </select>
+                <select>
+                    <option>All Review Status</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                </select>
+                <input type="date" placeholder="From date">
+                <input type="date" placeholder="To date">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Timestamp</th>
+                            <th>Driver</th>
+                            <th>Vehicle</th>
+                            <th>Depot</th>
+                            <th>Event Type</th>
+                            <th>Severity</th>
+                            <th>Review Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>E091</td>
+                            <td>2024-05-10 08:14</td>
+                            <td>Nguyen Van An (D-112)</td>
+                            <td>29A-123.45</td>
+                            <td>Ha Noi</td>
+                            <td>Harsh Braking</td>
+                            <td><span class="badge badge-low">LOW</span></td>
+                            <td><span class="badge badge-completed">COMPLETED</span></td>
+                            <td><a href="#" class="link-action">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>E092</td>
+                            <td>2024-05-10 09:30</td>
+                            <td>Nguyen Van An (D-112)</td>
+                            <td>29A-123.45</td>
+                            <td>Ha Noi</td>
+                            <td>Excessive Speeding</td>
+                            <td><span class="badge badge-high">HIGH</span></td>
+                            <td><span class="badge badge-pending">PENDING</span></td>
+                            <td><a href="#" class="link-action">Review</a></td>
+                        </tr>
+                        <tr>
+                            <td>E093</td>
+                            <td>2024-05-11 11:00</td>
+                            <td>Tran Thi Bich (D-204)</td>
+                            <td>51C-789.01</td>
+                            <td>Ho Chi Minh City</td>
+                            <td>Sharp Cornering</td>
+                            <td><span class="badge badge-medium">MEDIUM</span></td>
+                            <td><span class="badge badge-completed">COMPLETED</span></td>
+                            <td><a href="#" class="link-action">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>E094</td>
+                            <td>2024-05-12 14:20</td>
+                            <td>Nguyen Van An (D-112)</td>
+                            <td>43E-456.78</td>
+                            <td>Da Nang</td>
+                            <td>Fatigue Warning</td>
+                            <td><span class="badge badge-high">HIGH</span></td>
+                            <td><span class="badge badge-pending">PENDING</span></td>
+                            <td><a href="#" class="link-action">Review</a></td>
+                        </tr>
+                        <tr>
+                            <td>E095</td>
+                            <td>2024-05-13 07:42</td>
+                            <td>Le Quoc Minh (D-331)</td>
+                            <td>29A-123.45</td>
+                            <td>Ha Noi</td>
+                            <td>Excessive Idling</td>
+                            <td><span class="badge badge-low">LOW</span></td>
+                            <td><span class="badge badge-completed">COMPLETED</span></td>
+                            <td><a href="#" class="link-action">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>E096</td>
+                            <td>2024-05-13 18:05</td>
+                            <td>Tran Thi Bich (D-204)</td>
+                            <td>51C-789.01</td>
+                            <td>Ho Chi Minh City</td>
+                            <td>Excessive Speeding</td>
+                            <td><span class="badge badge-critical">CRITICAL</span></td>
+                            <td><span class="badge badge-pending">PENDING</span></td>
+                            <td><a href="safety-event-review.html" class="link-action">Review</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </body>
+</html>

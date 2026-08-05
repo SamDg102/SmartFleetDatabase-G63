@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mechanic.css">
+    <link rel="stylesheet" href="navbar.css">
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <i class="fa-solid fa-truck"></i>
+        <span>G63 Fleet<br>Management</span>
+    </div>
+    <h1>Mechanic Dashboard</h1>
+    <nav>
+        <ul>
+            <li ><a href="mechanic.html"><i class="fa-solid fa-wrench"></i>Maintenance History</a></li>
+            <li ><a href="mec2.html"><i class="fa-solid fa-file-pen"></i>Diagnostic Records</a></li>
+            <li class="activepage"><a href="#"><i class="fa-solid fa-hammer"></i>Previous Repair</a></li>
+        </ul>
+    </nav>
+    <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+</div>
+
+<main>
+<!-- Previous Repairs -->
+    <section id="repair">
+        <h1>Previous Repair Information</h1>
+        <hr>
+
+        <table>
+            <tr>
+                <th>Vehicle ID</th>
+                <th>Repair Details</th>
+                <th>Parts Replaced</th>
+                <th>Repair Date</th>
+            </tr>
+
+            <tr>
+                <td>VH001</td>
+                <td>Replaced brake pads</td>
+                <td>Brake Pads</td>
+                <td>15/06/2026</td>
+            </tr>
+
+            <tr>
+                <td>VH002</td>
+                <td>Battery Replacement</td>
+                <td>Battery</td>
+                <td>10/07/2026</td>
+            </tr>
+        </table>
+    </section>
+    <footer>
+        <p>&copy; 2026 G63 Fleet Management System. All rights reserved.</p>
+    </footer>
+</main>
+</body>
+</html>

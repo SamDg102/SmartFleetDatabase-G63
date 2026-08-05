@@ -1,0 +1,86 @@
+/* content of user list page*/
+/* section of the miniboxes*/
+.userlist {
+    margin-left: calc(var(--navbar-width) + 70px);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.userlist hr {
+    margin: 5px 0 30px 0;
+}
+
+.miniboxes {
+    display: grid;
+    grid-template-columns: repeat(4, 23%);
+    margin-bottom: 30px;
+    gap: 22px;
+}
+
+.miniboxes div {
+    background: var(--color-white);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--minibox-shadow);
+    padding: 20px;
+    display: grid;
+    grid-auto-flow: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.miniboxes div h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-green-deep);
+}
+
+
+/* section of vehicle maintenance history */
+.userquery h3{
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--color-grey-text);
+}
+
+/*table */
+.userquery table {
+    background: var(--color-white);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--color-grey-line);
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.userquery th {
+    text-align: left;
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.userquery td {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--color-grey-line);
+}
+
+.userquery tr:hover td {
+    background: var(--color-green-matcha);
+}
+
+footer {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-grey-text);
+    font-style: italic;
+    margin-top: auto;
+    text-align: center;
+    padding-top: 20px;
+}

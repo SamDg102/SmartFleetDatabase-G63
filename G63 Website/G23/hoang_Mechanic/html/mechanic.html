@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="mechanic.css">
+    <link rel="stylesheet" href="navbar.css">
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <i class="fa-solid fa-truck"></i>
+        <span>G63 Fleet<br>Management</span>
+    </div>
+    <h1>Mechanic Dashboard</h1>
+    <nav>
+        <ul>
+            <li class="activepage"><a href="#"><i class="fa-solid fa-wrench"></i>Maintenance History</a></li>
+            <li ><a href="mec2.html"><i class="fa-solid fa-file-pen"></i>Diagnostic Records</a></li>
+            <li ><a href="mec3.html"><i class="fa-solid fa-hammer"></i>Previous Repair</a></li>
+        </ul>
+    </nav>
+    <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+</div>
+
+<main>
+
+    <!-- Maintenance History -->
+    <section id="history">
+        <h1>Vehicle Maintenance History</h1>
+        <hr>
+
+        <table>
+            <tr>
+                <th>Vehicle ID</th>
+                <th>Service Date</th>
+                <th>Service Type</th>
+                <th>Mechanic</th>
+                <th>Status</th>
+            </tr>
+
+            <tr>
+                <td>VH001</td>
+                <td>20/07/2026</td>
+                <td>Oil Change</td>
+                <td>John</td>
+                <td>Completed</td>
+            </tr>
+
+            <tr>
+                <td>VH002</td>
+                <td>24/07/2026</td>
+                <td>Brake Inspection</td>
+                <td>Mike</td>
+                <td>Completed</td>
+            </tr>
+        </table>
+    </section>
+    <footer>
+        <p>&copy; 2026 G63 Fleet Management System. All rights reserved.</p>
+    </footer>
+</main>
+
+
+</body>
+
+</html>

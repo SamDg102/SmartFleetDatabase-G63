@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Maintenance job detail page of G63 Fleet Management System">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>G63 Workshop Staff - Job Detail</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="../styles/staff.css">
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-truck"></i>
+                <span>G63 Fleet<br>Management</span>
+            </div>
+            <h1>Workshop Staff</h1>
+            <nav>
+                <ul>
+                    <li class="activepage"><a href="workshop-staff.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance Jobs</a></li>
+                    <li><a href="#"><i class="fa-solid fa-bell"></i>Predictive Alerts</a></li>
+                    <li><a href="#"><i class="fa-solid fa-user-gear"></i>Mechanics &amp; Activities</a></li>
+                    <li><a href="#"><i class="fa-solid fa-boxes-stacked"></i>Parts &amp; Suppliers</a></li>
+                    <li><a href="#"><i class="fa-solid fa-file-shield"></i>Warranty Claims</a></li>
+                </ul>
+            </nav>
+            <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+        </div>
+
+        <main class="scorepage">
+            <a href="workshop-staff.html" class="back-link"><i class="fa-solid fa-arrow-left"></i>Back to Maintenance Jobs</a>
+
+            <div class="topbar">
+                <div>
+                    <h1>Job M1021</h1>
+                    <p>29A-123.45 &middot; Delivery Van &middot; HN-Bay-1, Ha Noi Depot</p>
+                </div>
+                <span class="badge badge-done">DONE</span>
+            </div>
+            <hr>
+
+            <div class="detail-grid">
+                <div>
+                    <div class="card">
+                        <h3>Job Summary</h3>
+                        <dl class="info-list">
+                            <div><dt>Opened</dt><dd>2024-05-12 09:00</dd></div>
+                            <div><dt>Closed</dt><dd>2024-05-13 03:00</dd></div>
+                            <div><dt>Downtime</dt><dd>18.0 hours</dd></div>
+                            <div><dt>Total cost</dt><dd>1,800,000₫</dd></div>
+                            <div><dt>Linked alert</dt><dd>Brake Wear Warning</dd></div>
+                            <div><dt>Odometer</dt><dd>45,310 km</dd></div>
+                        </dl>
+                    </div>
+
+                    <div class="card">
+                        <h3>Activities</h3>
+                        <div class="activity-row">
+                            <span>
+                                <div class="activity-name">1. Brake Service</div>
+                                <div class="activity-meta">Pads worn below 3mm &middot; no repeat fault &middot; no warranty</div>
+                            </span>
+                            <span class="badge badge-completed">DONE</span>
+                        </div>
+                        <div class="activity-row">
+                            <span>
+                                <div class="activity-name">2. Tyre Replacement</div>
+                                <div class="activity-meta">Worn unevenly - possible alignment issue &middot; repeat fault &middot; no warranty</div>
+                            </span>
+                            <span class="badge badge-completed">DONE</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Parts Used</h3>
+                        <div class="activity-row">
+                            <span class="activity-name">Brake Pad Set (BRK-PAD-001)</span>
+                            <span class="activity-meta">1 &times; 450,000₫</span>
+                        </div>
+                        <div class="activity-row">
+                            <span class="activity-name">215/75R16 Tyre (TYRE-215-001)</span>
+                            <span class="activity-meta">4 &times; 1,200,000₫</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h3>Mechanics Assigned</h3>
+                        <div class="activity-row">
+                            <span>
+                                <div class="activity-name">Hoang Van Duc (ME-12)</div>
+                                <div class="activity-meta">Activity 1 &middot; 2.5h</div>
+                            </span>
+                        </div>
+                        <div class="activity-row">
+                            <span>
+                                <div class="activity-name">Pham Thi Lan (ME-15)</div>
+                                <div class="activity-meta">Activity 1 &middot; 2.5h</div>
+                            </span>
+                        </div>
+                        <div class="activity-row">
+                            <span>
+                                <div class="activity-name">Hoang Van Duc (ME-12)</div>
+                                <div class="activity-meta">Activity 2 &middot; 1.0h</div>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Update Job</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="jobstatus">Job status</label>
+                                <select id="jobstatus">
+                                    <option>Not Started</option>
+                                    <option>In Progress</option>
+                                    <option selected>Done</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary"><i class="fa-solid fa-check"></i>Save</button>
+                                <button type="button" class="btn-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -28,7 +28,7 @@ switch ($role) {
         header('Location: hoang_Mechanic/mechanic.html');
         exit;
     case 'admin':
-        header('Location: vu_admin/front.php');
+        header('Location: vu_admin/userlist.php');
         exit;
     default:
         header('Location: ../');

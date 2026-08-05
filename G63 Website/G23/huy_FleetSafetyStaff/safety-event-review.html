@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Safety event review page of G63 Fleet Management System">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>G63 Safety Staff - Review Event</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="styles/staff.css">
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-truck"></i>
+                <span>G63 Fleet<br>Management</span>
+            </div>
+            <h1>Safety Staff</h1>
+            <nav>
+                <ul>
+                    <li class="activepage"><a href="safety-staff.html"><i class="fa-solid fa-car-burst"></i>Safety Event Log</a></li>
+                    <li><a href="#"><i class="fa-solid fa-star"></i>Monthly Safety Scores</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chalkboard"></i>Coaching &amp; Retraining</a></li>
+                    <li><a href="#"><i class="fa-solid fa-id-card"></i>Driver Certifications</a></li>
+                    <li><a href="#"><i class="fa-solid fa-truck-fast"></i>Driver &amp; Vehicle Assignment</a></li>
+                </ul>
+            </nav>
+            <div class="logout"><a href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+        </div>
+
+        <main class="scorepage">
+            <a href="safety-staff.html" class="back-link"><i class="fa-solid fa-arrow-left"></i>Back to Safety Event Log</a>
+
+            <div class="topbar">
+                <div>
+                    <h1>Event E096 — Excessive Speeding</h1>
+                    <p>Ho Chi Minh City Depot &middot; 51C-789.01 &middot; 2024-05-13 18:05</p>
+                </div>
+                <span class="badge badge-critical">CRITICAL</span>
+            </div>
+            <hr>
+
+            <div class="detail-grid">
+                <div>
+                    <div class="card">
+                        <h3>Event Details</h3>
+                        <dl class="info-list">
+                            <div><dt>Driver</dt><dd>Tran Thi Bich (D-204)</dd></div>
+                            <div><dt>Vehicle</dt><dd>51C-789.01 (Refrigerated Truck)</dd></div>
+                            <div><dt>Depot</dt><dd>Ho Chi Minh City Depot</dd></div>
+                            <div><dt>Timestamp</dt><dd>2024-05-13 18:05</dd></div>
+                            <div><dt>Event Type</dt><dd>Excessive Speeding</dd></div>
+                            <div><dt>Severity</dt><dd>Critical (-20 pts)</dd></div>
+                        </dl>
+                    </div>
+
+                    <div class="card">
+                        <h3>Review &amp; Decision</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="status">Review status</label>
+                                <select id="status">
+                                    <option>Pending</option>
+                                    <option selected>Completed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="comments">Reviewer comments</label>
+                                <textarea id="comments">Critical speeding event - driver placed on safety hold pending review</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="coaching">Trigger coaching / retraining</label>
+                                <select id="coaching">
+                                    <option>None</option>
+                                    <option selected>Retraining - assign now</option>
+                                    <option>Coaching session</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary"><i class="fa-solid fa-check"></i>Save Review</button>
+                                <button type="button" class="btn-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h3>Driver Status</h3>
+                        <dl class="info-list" style="grid-template-columns: 1fr;">
+                            <div><dt>Safety hold</dt><dd><span class="badge badge-critical">ACTIVE</span></dd></div>
+                            <div><dt>May 2024 score</dt><dd>65 / 100</dd></div>
+                            <div><dt>Action required</dt><dd>Driver coaching required (score &le; 75)</dd></div>
+                        </dl>
+                    </div>
+                    <div class="card">
+                        <h3>Other Events (May 2024)</h3>
+                        <div class="activity-row">
+                            <span class="activity-name">E093 &middot; Sharp Cornering</span>
+                            <span class="badge badge-medium">MEDIUM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

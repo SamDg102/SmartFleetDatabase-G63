@@ -1,0 +1,116 @@
+:root {
+    --color-black: #000000;
+    --color-green-matcha: #dffedf;
+    --color-green-deep: #12a800;
+    --color-green-basic: #18d600;
+    --color-white: #ffffff;
+    --color-grey-line: #ececec;
+    --color-grey-text: #6b6b6b;
+    --color-yellow: #fcd703;
+    --color-red: #fa0720;
+    
+    --navbar-width: 230px;
+    --radius-large: 20px;
+    --radius-medium: 14px;
+    --radius-small: 8px;
+    --minibox-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+
+
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background: var(--color-white);
+    color: var(--color-black);
+    display: flex;
+    min-height: fit-content;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* navigation bar*/
+
+.navbar {
+    width: var(--navbar-width);
+    flex-shrink: 0;
+    background: var(--color-black);
+    color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    border-radius: 0 40px 40px 0;
+}
+
+.logo {
+    background: var(--color-green-matcha);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    border-radius: 0 40px 0 0;
+}
+
+.logo i {
+    color: var(--color-green-deep);
+    padding: 0 5px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.logo span {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--color-green-deep);
+}
+
+.navbar h1 {
+    font-size: 22px;
+    font-weight: 700;
+    padding: 20px;
+    color: var(--color-white);
+}
+
+.navbar nav {
+    padding-top: 20px;
+}
+
+.activepage {
+    background: var(--color-green-deep);
+}
+
+.navbar li {
+    align-items: center;
+    padding: 20px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--color-white);
+}
+
+.navbar i {
+    padding-right: 5px;
+    color: var(--color-green-basic);
+}
+
+.navbar nav li:not(.activepage) :hover {
+    color: var(--color-green-basic);
+}
+
+.logout {
+    padding: 20px;
+    align-items: center;
+    color: var(--color-green-basic);
+    margin-top: auto;
+}

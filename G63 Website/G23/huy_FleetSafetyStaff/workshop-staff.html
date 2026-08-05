@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Workshop Management Staff dashboard of G63 Fleet Management System">
+        <meta name="keywords" content="Workshop, Fleet, Staff">
+        <meta name="author" content="Dang Nguyen Xuan Truc">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>G63 Workshop Staff Dashboard</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="styles/staff.css">
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-truck"></i>
+                <span>G63 Fleet<br>Management</span>
+            </div>
+            <h1>Workshop Staff</h1>
+            <nav>
+                <ul>
+                    <li class="activepage"><a href="#"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance Jobs</a></li>
+                    <li><a href="#"><i class="fa-solid fa-bell"></i>Predictive Alerts</a></li>
+                    <li><a href="#"><i class="fa-solid fa-user-gear"></i>Mechanics &amp; Activities</a></li>
+                    <li><a href="#"><i class="fa-solid fa-boxes-stacked"></i>Parts &amp; Suppliers</a></li>
+                    <li><a href="#"><i class="fa-solid fa-file-shield"></i>Warranty Claims</a></li>
+                </ul>
+            </nav>
+            <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+        </div>
+
+        <main class="scorepage">
+            <div class="topbar">
+                <div>
+                    <h1>Maintenance Jobs</h1>
+                    <p>Lịch sử công việc bảo trì tại các xưởng — Tháng 05/2024</p>
+                </div>
+                <button class="btn-primary"><i class="fa-solid fa-plus"></i>Open New Job</button>
+            </div>
+            <hr>
+
+            <section class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Jobs This Month</div>
+                </div>
+                <div class="stat-card warn">
+                    <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div class="stat-value">12h</div>
+                    <div class="stat-label">Avg. Downtime / Job</div>
+                </div>
+                <div class="stat-card alert">
+                    <div class="stat-icon"><i class="fa-solid fa-bell"></i></div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Unresolved Predictive Alerts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div class="stat-value">5,410,000₫</div>
+                    <div class="stat-label">Total Maintenance Cost</div>
+                </div>
+            </section>
+
+            <div class="filter-bar">
+                <select>
+                    <option>All Depots</option>
+                    <option>Ha Noi Depot</option>
+                    <option>Da Nang Depot</option>
+                    <option>Ho Chi Minh City Depot</option>
+                    <option>Can Tho Depot</option>
+                </select>
+                <select>
+                    <option>All Statuses</option>
+                    <option>Not Started</option>
+                    <option>In Progress</option>
+                    <option>Done</option>
+                </select>
+                <input type="date" placeholder="From date">
+                <input type="date" placeholder="To date">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Vehicle</th>
+                            <th>Bay</th>
+                            <th>Opened</th>
+                            <th>Closed</th>
+                            <th>Downtime</th>
+                            <th>Status</th>
+                            <th>Total Cost</th>
+                            <th>Linked Alert</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>M1021</td>
+                            <td>29A-123.45 (VN1DV2020HN000123)</td>
+                            <td>HN-Bay-1</td>
+                            <td>2024-05-12 09:00</td>
+                            <td>2024-05-13 03:00</td>
+                            <td>18.0h</td>
+                            <td><span class="badge badge-done">DONE</span></td>
+                            <td>1,800,000₫</td>
+                            <td>Brake Wear Warning</td>
+                            <td><a href="job-detail.html" class="link-action">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>M1022</td>
+                            <td>51C-789.01 (VN2RT2019HC000789)</td>
+                            <td>HC-Bay-1</td>
+                            <td>2024-05-14 08:00</td>
+                            <td>2024-05-14 14:00</td>
+                            <td>6.0h</td>
+                            <td><span class="badge badge-done">DONE</span></td>
+                            <td>3,610,000₫</td>
+                            <td>Cooling System Anomaly</td>
+                            <td><a href="#" class="link-action">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </body>
+</html>
