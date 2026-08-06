@@ -361,7 +361,7 @@ CREATE TABLE `warranty_claim_part` (
 -- 6. Authentication
 -- ==========================================
 
-CREATE TABLE `users` (
+CREATE TABLE `user_account` (
   `email` varchar(255) NOT NULL PRIMARY KEY, 
   `password` varchar(255) NOT NULL,
   `role` enum('fleet safety staff', 'driver', 'workshop manager', 'mechanic', 'admin') NOT NULL DEFAULT 'driver'
