@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../config/db.php';
-require __DIR__ . '/../models/MaintenanceJob.php';
+require_once __DIR__ . '/../config/db.php';
+
+include '../function.php';
+
+checkin('workshop manager');
+
+require_once __DIR__ . '/../models/MaintenanceJob.php';
 
 $jobModel = new MaintenanceJob($conn);
 $action   = $_POST['action'] ?? '';

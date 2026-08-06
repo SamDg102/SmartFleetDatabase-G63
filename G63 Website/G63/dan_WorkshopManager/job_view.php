@@ -1,5 +1,10 @@
 <?php
 require __DIR__ . '/config/db.php';
+
+include '../function.php';
+
+checkin('workshop manager');
+
 require __DIR__ . '/models/MaintenanceJob.php';
 $pageTitle = 'Maintenance Job';
 $pageCss = 'maintenancejobs';
