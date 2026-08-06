@@ -1,9 +1,6 @@
 <?php
 
 require __DIR__ . '/config/db.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Workshop Dashboard';
 $pageCss = 'dashboard';
@@ -18,94 +15,86 @@ $stats = [
 ];
 $recentJobs = [];
 $errorMessage = null;
-$statsSql = "SELECT
-                (
-                    SELECT COUNT(*)
-                    FROM maintenance_job
-                    WHERE job_status <> 'DONE'
-                ) AS open_jobs,
+$statsSql = "
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM maintenance_job
+                WHERE job_status <> 'DONE'
+            ) AS open_jobs,
 
-                (
-                    SELECT COUNT(DISTINCT VIN)
-                    FROM maintenance_job
-                    WHERE job_status <> 'DONE'
-                ) AS vehicles_in_repair,
+            (
+                SELECT COUNT(DISTINCT VIN)
+                FROM maintenance_job
+                WHERE job_status <> 'DONE'
+            ) AS vehicles_in_repair,
 
-                (
-                    SELECT COUNT(*)
-                    FROM mechanic
-                    WHERE employment_status = 1
-                ) AS active_mechanics,
+            (
+                SELECT COUNT(*)
+                FROM mechanic
+                WHERE employment_status = 1
+            ) AS active_mechanics,
 
-                (
-                    SELECT COUNT(*)
-                    FROM predictive_alert
-                    WHERE action_taken IS NULL
-                    OR TRIM(action_taken) = ''
-                ) AS pending_alerts,
+            (
+                SELECT COUNT(*)
+                FROM predictive_alert
+                WHERE action_taken IS NULL
+                   OR TRIM(action_taken) = ''
+            ) AS pending_alerts,
 
-                (
-                    SELECT COALESCE(
-                        SUM(ap.quantity_used * p.primary_unit_cost),
-                        0
-                    )
-                    FROM activity_part AS ap
-                    INNER JOIN part AS p
-                        ON p.part_id = ap.part_id
-                ) AS estimated_parts_cost
-            ";
+            (
+                SELECT COALESCE(
+                    SUM(ap.quantity_used * p.primary_unit_cost),
+                    0
+                )
+                FROM activity_part AS ap
+                INNER JOIN part AS p
+                    ON p.part_id = ap.part_id
+            ) AS estimated_parts_cost
+    ";
 
 $statsResult = $conn->query($statsSql);
-
-if ($statsResult === false) {
-    throw new RuntimeException($conn->error);
-}
-
 $stats = $statsResult->fetch_assoc();
 
-$recentSql = "SELECT
-                mj.job_id,
-                mj.VIN,
-                v.registration_number,
-                d.depot_name,
-                mj.job_status,
-                mj.date_opened,
-                GROUP_CONCAT(
-                    DISTINCT m.full_name
-                    ORDER BY m.full_name
-                    SEPARATOR ', '
-                ) AS mechanic_names
-            FROM maintenance_job AS mj
-            INNER JOIN vehicle AS v
-                ON v.VIN = mj.VIN
-            INNER JOIN workshop AS w
-                ON w.workshop_id = mj.workshop_id
-            INNER JOIN depot AS d
-                ON d.depot_id = w.depot_id
-            LEFT JOIN maintenance_activity AS act
-                ON act.job_id = mj.job_id
-            LEFT JOIN mechanic_activity AS ma
-                ON ma.job_id = act.job_id
-            AND ma.activity_id = act.activity_id
-            LEFT JOIN mechanic AS m
-                ON m.mechanic_id = ma.mechanic_id
-            GROUP BY
-                mj.job_id,
-                mj.VIN,
-                v.registration_number,
-                d.depot_name,
-                mj.job_status,
-                mj.date_opened
-            ORDER BY mj.date_opened DESC, mj.job_id DESC
-            LIMIT 8
-        ";
+$recentSql = "
+        SELECT
+            mj.job_id,
+            mj.VIN,
+            v.registration_number,
+            d.depot_name,
+            mj.job_status,
+            mj.date_opened,
+            GROUP_CONCAT(
+                DISTINCT m.full_name
+                ORDER BY m.full_name
+                SEPARATOR ', '
+            ) AS mechanic_names
+        FROM maintenance_job AS mj
+        INNER JOIN vehicle AS v
+            ON v.VIN = mj.VIN
+        INNER JOIN workshop AS w
+            ON w.workshop_id = mj.workshop_id
+        INNER JOIN depot AS d
+            ON d.depot_id = w.depot_id
+        LEFT JOIN maintenance_activity AS act
+            ON act.job_id = mj.job_id
+        LEFT JOIN mechanic_activity AS ma
+            ON ma.job_id = act.job_id
+           AND ma.activity_id = act.activity_id
+        LEFT JOIN mechanic AS m
+            ON m.mechanic_id = ma.mechanic_id
+        GROUP BY
+            mj.job_id,
+            mj.VIN,
+            v.registration_number,
+            d.depot_name,
+            mj.job_status,
+            mj.date_opened
+        ORDER BY mj.date_opened DESC, mj.job_id DESC
+        LIMIT 8
+    ";
 
 $recentResult = $conn->query($recentSql);
-
-if ($recentResult === false) {
-    throw new RuntimeException($conn->error);
-}
-
 $recentJobs = $recentResult->fetch_all(MYSQLI_ASSOC);
 include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php';
