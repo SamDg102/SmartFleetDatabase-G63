@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../models/MechanicActivity.php';
+require __DIR__ . '/../config/db.php';
+require __DIR__ . '/../models/MechanicActivity.php';
 
 $action = $_POST['action'] ?? '';
 $model  = new MechanicActivity($conn);

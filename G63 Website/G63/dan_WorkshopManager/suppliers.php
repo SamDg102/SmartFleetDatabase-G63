@@ -1,6 +1,11 @@
 <?php
 
 require_once __DIR__ . '/config/db.php';
+
+include '../function.php';
+
+checkin('workshop manager');
+
 require_once __DIR__ . '/models/Supplier.php';
 
 $pageTitle = 'Suppliers';

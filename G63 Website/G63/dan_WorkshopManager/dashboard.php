@@ -2,6 +2,10 @@
 
 require __DIR__ . '/config/db.php';
 
+include '../function.php';
+
+checkin('workshop manager');
+
 $pageTitle = 'Workshop Dashboard';
 $pageCss = 'dashboard';
 $currentPage = 'dashboard';

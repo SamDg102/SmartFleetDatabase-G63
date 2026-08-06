@@ -2,6 +2,10 @@
 
 require_once __DIR__ . '/config/db.php';
 
+include '../function.php';
+
+checkin('workshop manager');
+
 $pageTitle = 'Workshop Reports';
 $pageCss = 'reports';
 $currentPage = 'reports';
