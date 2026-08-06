@@ -1,10 +1,7 @@
 <?php
 
-require_once __DIR__ . '/config/db.php';
-require_once __DIR__ . '/models/Vehicle.php';
-require '../function.php';
-
-checkin('workshop manager');
+require __DIR__ . '/config/db.php';
+require __DIR__ . '/models/Vehicle.php';
 
 $pageTitle = 'Vehicle Detail';
 $pageCss = 'vehicles';
@@ -25,20 +22,17 @@ $errorMessage = null;
 if ($vin === '') {
     $errorMessage = 'A VIN is required.';
 } else {
-    try {
-        $vehicleModel = new Vehicle($conn);
-        $vehicle = $vehicleModel->getByVin($vin);
 
-        if ($vehicle === null) {
-            $errorMessage = 'Vehicle not found.';
-        } else {
-            $jobs = $vehicleModel->getMaintenanceJobs($vin);
-            $alerts = $vehicleModel->getAlerts($vin);
-            $assignments = $vehicleModel->getAlerts($vin);
-            $summary = $vehicleModel->getMaintenanceSummary($vin);
-        }
-    } catch (Throwable $exception) {
-        $errorMessage = $exception->getMessage();
+    $vehicleModel = new Vehicle($conn);
+    $vehicle = $vehicleModel->getByVin($vin);
+
+    if ($vehicle === null) {
+        $errorMessage = 'Vehicle not found.';
+    } else {
+        $jobs = $vehicleModel->getMaintenanceJobs($vin);
+        $alerts = $vehicleModel->getAlerts($vin);
+        $assignments = $vehicleModel->getAlerts($vin);
+        $summary = $vehicleModel->getMaintenanceSummary($vin);
     }
 }
 
