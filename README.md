@@ -6,8 +6,8 @@ HOW TO USE?
 1. Download from github using the method of your choosing
 2. Move your downloaded folder into htdocs folder of your XAMPP
 3. Import sql file in the order: 
-    + G63DBsystem(NoTrigger).sql -in /db structure/ - into your phpmyadmin
-    + G63SUPERdummydata.sql -in /data/ - into the previously imported database
+    + G63DBsystem(NoTrigger).sql -at /db structure/ - into your phpmyadmin
+    + G63SUPERdummydata.sql -at /data/ - into the previously imported database
 4. Add your phpmyadmin password into db.php, which is in /G63 Website/
 5. Enter "localhost/downloaded folder's name/G63 Website" into the URL
 6. Enjoy!
