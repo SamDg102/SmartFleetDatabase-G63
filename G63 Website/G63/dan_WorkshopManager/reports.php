@@ -204,9 +204,7 @@ include __DIR__ . '/includes/navbar.php';
         <section>
             <h2>Vehicle Maintenance Summary</h2>
             <p>
-                Cost is estimated from primary part unit cost only because
-                the current database does not store labour cost or a
-                job-level total cost.
+                Cost is estimated from primary part unit cost.
             </p>
 
             <table>
