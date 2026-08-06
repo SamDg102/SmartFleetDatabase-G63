@@ -13293,7 +13293,7 @@ INSERT INTO `warranty_claim_part` (`claim_id`, `job_id`, `activity_id`, `part_id
 
 -- Add user login, pass: 123123
 
-INSERT INTO `users` (`email`, `password`, `role`) VALUES
+INSERT INTO `user_account` (`email`, `password`, `role`) VALUES
 ('fleetss1@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
 ('fleetss2@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
 ('fleetss3@gmail.com', '0e9212587d373ca58e9bada0c15e6fe4', 'fleet safety staff'),
