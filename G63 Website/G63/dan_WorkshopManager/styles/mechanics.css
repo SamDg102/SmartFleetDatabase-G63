@@ -38,6 +38,11 @@ hr {
     color: var(--color-grey-line);
 }
 
+.mechanic-detail {
+    margin-left: var(--navbar-width);
+    padding: 40px;
+}
+
 /* content of mechanics page*/
 /* section of the miniboxes*/
 .mechanics {

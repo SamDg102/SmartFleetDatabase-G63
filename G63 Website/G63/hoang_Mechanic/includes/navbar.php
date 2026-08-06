@@ -3,7 +3,7 @@
         <i class="fa-solid fa-truck"></i>
         <span>G63 Fleet<br>Management</span>
     </div>
-    <h1>Driver Dashboard</h1>
+    <h1>Mechanic Dashboard</h1>
     <nav>
         <ul>
             <li class="<?= $currentPage == 'mechanic' ? 'activepage' : '' ?>"><a href="mechanic.php"><i class="fa-solid fa-wrench"></i>Mechanic Dashboard</a></li>

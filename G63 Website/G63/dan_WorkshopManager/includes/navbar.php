@@ -16,5 +16,5 @@
             <li class="<?= $currentPage == 'reports' ? 'activepage' : '' ?>"><a href="reports.php"><i class="fa-solid fa-chart-line"></i>Reports</a></li>
         </ul>
     </nav>
-    <div class="logout"><a href="#"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
+    <div class="logout"><a href="../logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a></div>
 </div>

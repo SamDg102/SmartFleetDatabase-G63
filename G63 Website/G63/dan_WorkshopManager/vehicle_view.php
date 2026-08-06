@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/models/Vehicle.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Vehicle Detail';
 $pageCss = 'vehicles';
@@ -25,20 +22,17 @@ $errorMessage = null;
 if ($vin === '') {
     $errorMessage = 'A VIN is required.';
 } else {
-    try {
-        $vehicleModel = new Vehicle($conn);
-        $vehicle = $vehicleModel->getByVin($vin);
 
-        if ($vehicle === null) {
-            $errorMessage = 'Vehicle not found.';
-        } else {
-            $jobs = $vehicleModel->getMaintenanceJobs($vin);
-            $alerts = $vehicleModel->getAlerts($vin);
-            $assignments = $vehicleModel->getAlerts($vin);
-            $summary = $vehicleModel->getMaintenanceSummary($vin);
-        }
-    } catch (Throwable $exception) {
-        $errorMessage = $exception->getMessage();
+    $vehicleModel = new Vehicle($conn);
+    $vehicle = $vehicleModel->getByVin($vin);
+
+    if ($vehicle === null) {
+        $errorMessage = 'Vehicle not found.';
+    } else {
+        $jobs = $vehicleModel->getMaintenanceJobs($vin);
+        $alerts = $vehicleModel->getAlerts($vin);
+        $assignments = $vehicleModel->getDriverAssignments($vin);
+        $summary = $vehicleModel->getMaintenanceSummary($vin);
     }
 }
 
@@ -109,26 +103,10 @@ include __DIR__ . '/includes/navbar.php';
                         </td>
                     </tr>
                     <tr>
-                        <th>Depot Location</th>
-                        <td>
-                            <?= htmlspecialchars(
-                                $vehicle['depot_location']
-                            ) ?>
-                        </td>
-                    </tr>
-                    <tr>
                         <th>Status</th>
                         <td>
                             <?= htmlspecialchars(
-                                $vehicle['vehicle_status_name']
-                            ) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Assignability</th>
-                        <td>
-                            <?= htmlspecialchars(
-                                $vehicle['assignability']
+                                $vehicle['vehicle_status']
                             ) ?>
                         </td>
                     </tr>

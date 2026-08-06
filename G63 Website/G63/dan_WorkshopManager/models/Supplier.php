@@ -6,16 +6,22 @@ class Supplier
 
     public function getAll(): array
     {
-        $sql = "SELECT supplier_id, supplier_name, contact_info, delivery_lead_time
-                FROM supplier
-                ORDER BY supplier_name";
+        $sql = "SELECT s.supplier_id, s.supplier_name, s.contact_info,
+                       s.delivery_lead_time,
+                       (SELECT COUNT(*) FROM part AS p
+                        WHERE p.primary_supplier_id = s.supplier_id) AS primary_part_count,
+                       (SELECT COUNT(*) FROM part AS p
+                        WHERE p.backup_supplier_id = s.supplier_id) AS backup_part_count,
+                       (SELECT COUNT(*) FROM part_order AS po
+                        WHERE po.supplier_id = s.supplier_id) AS order_count,
+                       (SELECT COALESCE(SUM(pod.quantity_order * pod.unit_price), 0)
+                        FROM part_order AS po
+                        INNER JOIN part_order_detail AS pod ON pod.order_id = po.order_id
+                        WHERE po.supplier_id = s.supplier_id) AS total_order_value
+                FROM supplier AS s
+                ORDER BY s.supplier_name";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException('Unable to retrieve suppliers: ' . $this->conn->error);
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

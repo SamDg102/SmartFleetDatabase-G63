@@ -15,8 +15,9 @@ class Vehicle
 
                 m.manufacturer_name,
                 vc.category_name,
-                v.vehicle_status AS status_name,
-                d.depot_name
+                v.vehicle_status,
+                d.depot_name,
+                d.depot_location
 
             FROM vehicle AS v
 
@@ -25,21 +26,19 @@ class Vehicle
 
             LEFT JOIN vehicle_category AS vc
                 ON v.category_id = vc.category_id
-
-            LEFT JOIN depot AS d
-                ON v.depot_id = d.depot_id
+                
+            LEFT JOIN depot as d
+            	on d.depot_id = v.depot_id
 
             ORDER BY v.registration_number
         ";
 
         $result = $this->conn->query($sql);
-
         if ($result === false) {
             throw new RuntimeException(
                 'Unable to retrieve vehicles: ' . $this->conn->error
             );
         }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -49,9 +48,9 @@ class Vehicle
             SELECT
                 v.*,
                 m.manufacturer_name,
+                m.contact_info AS manufacturer_contact,
                 vc.category_name,
-                vehicle_status_name AS status_name,
-                v.depot_location AS depot_name
+                v.vehicle_status
 
             FROM vehicle AS v
 
@@ -85,18 +84,30 @@ class Vehicle
     {
         $sql = "
             SELECT
-                job_id,
-                date_opened,
-                date_closed,
-                downtime_hours,
-                job_status,
-                0 AS cost_total
+                mj.job_id,
+                d.depot_name,
+                d.depot_location,
+                mj.date_opened,
+                mj.date_closed,
+                ROUND(TIME_TO_SEC(mj.downtime_hours) / 3600, 2)
+                    AS downtime_hours_decimal,
+                mj.job_status,
 
-            FROM maintenance_job
+                (SELECT COALESCE(SUM(ap.quantity_used * p.primary_unit_cost), 0)
+                 FROM maintenance_activity AS ma
+                 INNER JOIN activity_part AS ap
+                    ON ap.job_id = ma.job_id AND ap.activity_id = ma.activity_id
+                 INNER JOIN part AS p 
+                 	ON p.part_id = ap.part_id
+                 WHERE ma.job_id = mj.job_id) AS estimated_parts_cost
 
-            WHERE VIN = ?
-
-            ORDER BY date_opened DESC
+            FROM maintenance_job AS mj
+            INNER JOIN service_bay AS sb 
+            	ON sb.service_bay_id = mj.service_bay_id
+                INNER JOIN depot AS d 
+                    ON sb.depot_id = d.depot_id
+            WHERE mj.VIN =  ?
+            ORDER BY mj.date_opened DESC
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -112,17 +123,19 @@ class Vehicle
     {
         $sql = "
             SELECT
-                alert_id,
-                alert_type_id,
-                job_id,
-                timestamp,
-                action_taken
-
-            FROM predictive_alert
-
-            WHERE VIN = ?
-
-            ORDER BY timestamp DESC
+                pa.alert_id,
+                pa.alert_type_id,
+                at.alert_name,
+                at.description,
+                pa.job_id,
+                pa.timestamp,
+                IF(pa.action_taken IS NULL OR TRIM(pa.action_taken) = '',
+                   'Pending', 'Actioned') AS alert_status,
+                pa.action_taken
+            FROM predictive_alert AS pa
+            INNER JOIN alert_type AS at ON at.alert_type_id = pa.alert_type_id
+            WHERE pa.VIN = ?
+            ORDER BY pa.timestamp DESC
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -134,13 +147,36 @@ class Vehicle
             ->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getDriverAssignments(string $vin): array
+    {
+        $stmt = $this->conn->prepare(
+            'SELECT d.driver_id, d.full_name, d.contact_info,
+                    vda.start_date, vda.end_date
+             FROM vehicle_driver_assignment AS vda
+             INNER JOIN driver AS d ON d.driver_id = vda.driver_id
+             WHERE vda.VIN = ?
+             ORDER BY vda.start_date DESC'
+        );
+        $stmt->bind_param('s', $vin);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function getMaintenanceSummary(string $vin): array
     {
         $sql = "
             SELECT
                 COUNT(*) AS total_jobs,
-                COALESCE(SUM(downtime_hours), 0) AS total_downtime_hours,
-                0 AS total_repair_cost
+                COALESCE(ROUND(SUM(TIME_TO_SEC(downtime_hours)) / 3600, 2), 0)
+                    AS total_downtime_hours,
+                (SELECT COALESCE(SUM(ap.quantity_used * p.primary_unit_cost), 0)
+                 FROM maintenance_job AS mj
+                 INNER JOIN maintenance_activity AS ma ON ma.job_id = mj.job_id
+                 INNER JOIN activity_part AS ap
+                    ON ap.job_id = ma.job_id AND ap.activity_id = ma.activity_id
+                 INNER JOIN part AS p ON p.part_id = ap.part_id
+                 WHERE mj.VIN = ?) AS estimated_repair_cost
 
             FROM maintenance_job
 
@@ -148,7 +184,7 @@ class Vehicle
         ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('s', $vin);
+        $stmt->bind_param('ss', $vin, $vin);
         $stmt->execute();
 
         return $stmt->get_result()->fetch_assoc();

@@ -1,5 +1,9 @@
 <?php
+session_start();
 include "includes/includes.php";
+include '../function.php';
+
+checkin('mechanic');
 
 $sql = "SELECT * FROM maintenance_job";
 $result = mysqli_query($conn, $sql);

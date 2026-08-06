@@ -16,22 +16,22 @@ if (isset($_SESSION['role']) && !empty($_SESSION['role'])) {
 
 switch ($role) {
     case 'fleet safety staff':
-        header('Location: huy_FleetSafetyStaff/safety-staff.html');
+        header('Location: huy_FleetSafetyStaff/workshop-staff.php');
         exit;
     case 'driver':
         header('Location: truc_Driver/scorepage.php');
         exit;
     case 'workshop manager':
-        header('Location: dan_WorkshopManager/scorepage.php');
+        header('Location: dan_WorkshopManager/dashboard.php');
         exit;
     case 'mechanic':
-        header('Location: hoang_Mechanic/mechanic.html');
+        header('Location: hoang_Mechanic/mechanic.php');
         exit;
     case 'admin':
         header('Location: vu_admin/userlist.php');
         exit;
     default:
-        header('Location: ../');
+        header('Location: logout.php');
         exit;
 }
 ?>

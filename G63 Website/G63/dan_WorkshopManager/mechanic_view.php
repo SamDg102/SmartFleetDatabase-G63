@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/models/Mechanic.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Mechanic Detail';
 $pageCss = 'mechanics';
@@ -24,20 +21,16 @@ $errorMessage = null;
 if ($mechanicId === false || $mechanicId === null) {
     $errorMessage = 'A valid mechanic_id is required.';
 } else {
-    try {
-        $mechanicModel = new Mechanic($conn);
-        $mechanic = $mechanicModel->getById($mechanicId);
+    $mechanicModel = new Mechanic($conn);
+    $mechanic = $mechanicModel->getById($mechanicId);
 
-        if ($mechanic === null) {
-            $errorMessage = 'Mechanic not found.';
-        } else {
-            $certifications =
-                $mechanicModel->getCertifications($mechanicId);
-            $assignments =
-                $mechanicModel->getAssignments($mechanicId);
-        }
-    } catch (Throwable $exception) {
-        $errorMessage = $exception->getMessage();
+    if ($mechanic === null) {
+        $errorMessage = 'Mechanic not found.';
+    } else {
+        $certifications =
+            $mechanicModel->getCertifications($mechanicId);
+        $assignments =
+            $mechanicModel->getAssignments($mechanicId);
     }
 }
 
@@ -67,8 +60,8 @@ include __DIR__ . '/includes/navbar.php';
             <table>
                 <tbody>
                     <tr>
-                        <th>Workshop ID</th>
-                        <td><?= (int) $mechanic['workshop_id'] ?></td>
+                        <th>Depot ID</th>
+                        <td><?= (int) $mechanic['depot_id'] ?></td>
                     </tr>
                     <tr>
                         <th>Depot</th>
@@ -100,7 +93,6 @@ include __DIR__ . '/includes/navbar.php';
                         <th>Certification ID</th>
                         <th>Certification</th>
                         <th>Expiration Date</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,11 +116,6 @@ include __DIR__ . '/includes/navbar.php';
                                 <td>
                                     <?= htmlspecialchars(
                                         $certification['expiration_date']
-                                    ) ?>
-                                </td>
-                                <td>
-                                    <?= htmlspecialchars(
-                                        $certification['certification_status']
                                     ) ?>
                                 </td>
                             </tr>

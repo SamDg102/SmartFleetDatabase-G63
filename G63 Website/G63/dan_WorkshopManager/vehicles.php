@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/models/Vehicle.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Vehicles';
 $pageCss = 'vehicles';
@@ -47,7 +44,6 @@ include __DIR__ . '/includes/navbar.php';
                     <th>Odometer</th>
                     <th>Depot Location</th>
                     <th>Status</th>
-                    <th>Assignability</th>
                     <th>Details</th>
                 </tr>
             </thead>
@@ -88,17 +84,12 @@ include __DIR__ . '/includes/navbar.php';
                             </td>
                             <td>
                                 <?= htmlspecialchars(
-                                    $vehicle['depot_location']
+                                    $vehicle['depot_name']
                                 ) ?>
                             </td>
                             <td>
                                 <?= htmlspecialchars(
-                                    $vehicle['vehicle_status_name']
-                                ) ?>
-                            </td>
-                            <td>
-                                <?= htmlspecialchars(
-                                    $vehicle['assignability']
+                                    $vehicle['vehicle_status']
                                 ) ?>
                             </td>
                             <td>

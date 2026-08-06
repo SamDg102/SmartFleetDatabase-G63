@@ -15,7 +15,7 @@ if(isset($_POST['sign_in'])){
         $_SESSION['email'] = $email;
         $_SESSION['role'] = $user['role'];
         
-        header("Location: G23/redirect.php?role=" . urlencode($user['role']));
+        header("Location: G63/redirect.php?role=" . urlencode($user['role']));
      
      } 
      else {

@@ -1,11 +1,6 @@
 <?php
 require __DIR__ . '/config/db.php';
 require __DIR__ . '/models/MaintenanceJob.php';
-require '../function.php';
-
-checkin('workshop manager');
-
-
 $pageTitle = 'Maintenance Job';
 $pageCss = 'maintenancejobs';
 $currentPage = 'maintenancejobs';
@@ -32,7 +27,7 @@ $isCreate = $mode === 'create';
     <?php if ($errorMessage): ?><p role="alert"><?= htmlspecialchars($errorMessage) ?></p><?php else: ?>
         <form method="post" action="actions/job_action.php"><input type="hidden" name="action" value="<?= $isCreate ? 'create' : 'update' ?>"><?php if (!$isCreate): ?><input type="hidden" name="job_id" value="<?= (int)$jobId ?>"><?php endif; ?>
             <label>VIN<input name="VIN" maxlength="17" required value="<?= htmlspecialchars($job['VIN'] ?? '') ?>"></label>
-            <label>Workshop ID<input type="number" min="1" name="workshop_id" required value="<?= htmlspecialchars((string)($job['workshop_id'] ?? '')) ?>"></label>
+            <label>Service Bay ID<input type="number" min="1" name="service_bay_id" required value="<?= htmlspecialchars((string)($job['service_bay_id'] ?? '')) ?>"></label>
             <label>Date Opened<input type="date" name="date_opened" required value="<?= htmlspecialchars($job['date_opened'] ?? '') ?>"></label>
             <label>Date Closed<input type="date" name="date_closed" value="<?= htmlspecialchars($job['date_closed'] ?? '') ?>"></label>
             <label>Downtime Hours<input type="time" step="1" name="downtime_hours" required value="<?= htmlspecialchars($job['downtime_hours'] ?? '00:00:00') ?>"></label>

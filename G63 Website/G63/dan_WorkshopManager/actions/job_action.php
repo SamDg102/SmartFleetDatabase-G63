@@ -12,7 +12,7 @@ switch ($action) {
     case 'create':
         $jobModel->create([
             'VIN'            => $_POST['VIN'] ?? '',
-            'workshop_id'    => $_POST['workshop_id'] ?? 0,
+            'service_bay_id' => $_POST['service_bay_id'] ?? 0,
             'date_opened'    => $_POST['date_opened'] ?? '',
             'date_closed'    => $_POST['date_closed'] ?? '',
             'downtime_hours' => $_POST['downtime_hours'] ?? '00:00:00',
@@ -25,7 +25,7 @@ switch ($action) {
 
         $jobModel->update($jobId, [
             'VIN'            => $_POST['VIN'] ?? '',
-            'workshop_id'    => $_POST['workshop_id'] ?? 0,
+            'service_bay_id' => $_POST['service_bay_id'] ?? 0,
             'date_opened'    => $_POST['date_opened'] ?? '',
             'date_closed'    => $_POST['date_closed'] ?? '',
             'downtime_hours' => $_POST['downtime_hours'] ?? '00:00:00',

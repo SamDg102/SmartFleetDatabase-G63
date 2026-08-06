@@ -1,23 +1,21 @@
 <?php
 require __DIR__ . '/config/db.php';
-include '../function.php';
-
-checkin('workshop manager');
-
-
 $pageTitle = 'Predictive Alerts';
 $pageCss = 'alerts';
 $currentPage = 'alerts';
 $alerts = [];
 $errorMessage = null;
-try {
-    $sql = "SELECT pa.alert_id,pa.VIN,v.registration_number,at.alert_name,at.description,pa.job_id,pa.timestamp,pa.action_taken FROM predictive_alert pa JOIN vehicle v ON v.VIN=pa.VIN JOIN alert_type at ON at.alert_type_id=pa.alert_type_id ORDER BY pa.timestamp DESC";
-    $r = $conn->query($sql);
-    if (!$r) throw new RuntimeException($conn->error);
-    $alerts = $r->fetch_all(MYSQLI_ASSOC);
-} catch (Throwable $e) {
-    $errorMessage = $e->getMessage();
-}
+$sql =
+    "SELECT pa.alert_id,pa.VIN,v.registration_number,at.alert_name,at.description,pa.job_id,pa.timestamp,pa.action_taken 
+FROM predictive_alert pa 
+JOIN vehicle v 
+ON v.VIN=pa.VIN 
+JOIN alert_type 
+at ON at.alert_type_id=pa.alert_type_id 
+ORDER BY pa.timestamp DESC";
+$r = $conn->query($sql);
+if (!$r) throw new RuntimeException($conn->error);
+$alerts = $r->fetch_all(MYSQLI_ASSOC);
 include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php'; ?>
 <main class="alerts">

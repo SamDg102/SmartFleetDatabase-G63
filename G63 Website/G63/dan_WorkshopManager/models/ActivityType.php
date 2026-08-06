@@ -11,11 +11,6 @@ class ActivityType
                 ORDER BY activity_type_name";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException('Unable to retrieve activity types: ' . $this->conn->error);
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

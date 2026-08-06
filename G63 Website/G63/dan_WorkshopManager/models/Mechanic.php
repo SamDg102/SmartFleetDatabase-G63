@@ -10,24 +10,33 @@ class Mechanic
             SELECT
                 m.mechanic_id,
                 m.full_name,
-                m.workshop_id,
+                m.depot_id,
                 d.depot_name,
                 d.depot_location,
-                m.employment_status
+                m.employment_status,
+                (SELECT COUNT(*)
+                 FROM mechanic_certification_record AS mcr
+                 WHERE mcr.mechanic_id = m.mechanic_id) AS certification_count,
+                (SELECT COUNT(*)
+                 FROM mechanic_certification_record AS mcr
+                 WHERE mcr.mechanic_id = m.mechanic_id
+                   AND mcr.expiration_date >= CURDATE()) AS valid_certification_count,
+                (SELECT COUNT(*)
+                 FROM mechanic_activity AS ma
+                 WHERE ma.mechanic_id = m.mechanic_id) AS assigned_activity_count,
+                (SELECT COALESCE(ROUND(SUM(TIME_TO_SEC(ma.labour_hours)) / 3600, 2), 0)
+                 FROM mechanic_activity AS ma
+                 WHERE ma.mechanic_id = m.mechanic_id) AS total_labour_hours
             FROM mechanic AS m
-            INNER JOIN workshop AS w
-                ON w.workshop_id = m.workshop_id
             INNER JOIN depot AS d
-                ON d.depot_id = w.depot_id
+                ON d.depot_id = m.depot_id
             ORDER BY m.full_name
         ";
 
         $result = $this->conn->query($sql);
-
         if ($result === false) {
-            throw new RuntimeException('Unable to retrieve mechanics: ' . $this->conn->error);
+            throw new RuntimeException('Database query failed: ' . $this->conn->error);
         }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -35,11 +44,10 @@ class Mechanic
     {
         $stmt = $this->prepare(
             'SELECT
-                m.mechanic_id, m.full_name, m.workshop_id,
+                m.mechanic_id, m.full_name, m.depot_id,
                 d.depot_name, d.depot_location, m.employment_status
              FROM mechanic AS m
-             INNER JOIN workshop AS w ON w.workshop_id = m.workshop_id
-             INNER JOIN depot AS d ON d.depot_id = w.depot_id
+             INNER JOIN depot AS d ON d.depot_id = m.depot_id
              WHERE m.mechanic_id = ?'
         );
 
@@ -52,15 +60,15 @@ class Mechanic
     public function create(array $data): bool
     {
         $stmt = $this->prepare(
-            'INSERT INTO mechanic (full_name, workshop_id, employment_status)
+            'INSERT INTO mechanic (full_name, depot_id, employment_status)
              VALUES (?, ?, ?)'
         );
 
         $fullName         = trim((string) $data['full_name']);
-        $workshopId       = (int) $data['workshop_id'];
+        $depotId          = (int) $data['depot_id'];
         $employmentStatus = (int) (bool) $data['employment_status'];
 
-        $stmt->bind_param('sii', $fullName, $workshopId, $employmentStatus);
+        $stmt->bind_param('sii', $fullName, $depotId, $employmentStatus);
 
         return $stmt->execute();
     }
@@ -69,15 +77,15 @@ class Mechanic
     {
         $stmt = $this->prepare(
             'UPDATE mechanic
-             SET full_name = ?, workshop_id = ?, employment_status = ?
+             SET full_name = ?, depot_id = ?, employment_status = ?
              WHERE mechanic_id = ?'
         );
 
         $fullName         = trim((string) $data['full_name']);
-        $workshopId       = (int) $data['workshop_id'];
+        $depotId          = (int) $data['depot_id'];
         $employmentStatus = (int) (bool) $data['employment_status'];
 
-        $stmt->bind_param('siii', $fullName, $workshopId, $employmentStatus, $mechanicId);
+        $stmt->bind_param('siii', $fullName, $depotId, $employmentStatus, $mechanicId);
 
         return $stmt->execute();
     }
@@ -132,7 +140,8 @@ class Mechanic
     {
         $stmt = $this->prepare(
             'SELECT
-                ma.job_id, ma.activity_id, ma.labour_hours AS labour_hours_decimal,
+                ma.job_id, ma.activity_id,
+                ROUND(TIME_TO_SEC(ma.labour_hours) / 3600, 2) AS labour_hours_decimal,
                 mj.VIN, v.registration_number, mj.date_opened, mj.job_status,
                 at.activity_type_name
              FROM mechanic_activity AS ma
@@ -155,11 +164,10 @@ class Mechanic
     public function getLookupOptions(): array
     {
         return [
-            'workshops' => $this->conn
-                ->query('SELECT w.workshop_id, d.depot_name
-                          FROM workshop AS w
-                          INNER JOIN depot AS d ON d.depot_id = w.depot_id
-                          ORDER BY d.depot_name')
+            'depots' => $this->conn
+                ->query('SELECT depot_id, depot_name
+                          FROM depot
+                          ORDER BY depot_name')
                 ->fetch_all(MYSQLI_ASSOC),
 
             'certifications' => $this->conn

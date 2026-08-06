@@ -8,7 +8,7 @@
     --color-grey-text: #6b6b6b;
     --color-yellow: #fcd703;
     --color-red: #fa0720;
-    
+
     --navbar-width: 230px;
     --radius-large: 20px;
     --radius-medium: 14px;
@@ -17,7 +17,7 @@
 }
 
 * {
-    margin:0;
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
@@ -38,6 +38,11 @@ hr {
     color: var(--color-grey-line);
 }
 
+.vehicle-detail {
+    margin-left: var(--navbar-width);
+    padding: 40px;
+}
+
 /* content of vehicles page*/
 /* section of the miniboxes*/
 .vehicles {
@@ -52,7 +57,7 @@ hr {
 }
 
 /* section of vehicle list */
-.vehiclelist h3{
+.vehiclelist h3 {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 18px;

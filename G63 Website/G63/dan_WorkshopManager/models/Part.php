@@ -6,28 +6,33 @@ class Part
 
     public function getAll(): array
     {
-        $sql = "SELECT
-                    p.part_id,
-                    p.primary_supplier_id,
-                    sp.supplier_name AS primary_supplier_name,
-                    p.primary_unit_cost,
-                    p.backup_supplier_id,
-                    sb.supplier_name AS backup_supplier_name,
-                    p.backup_unit_cost
-                FROM part AS p
-                INNER JOIN supplier AS sp
-                    ON sp.supplier_id = p.primary_supplier_id
-                LEFT JOIN supplier AS sb
-                    ON sb.supplier_id = p.backup_supplier_id
-                ORDER BY p.part_id
-                ";
+        $sql = "
+            SELECT
+                p.part_id,
+                p.primary_supplier_id,
+                sp.supplier_name AS primary_supplier_name,
+                p.primary_unit_cost,
+                p.backup_supplier_id,
+                sb.supplier_name AS backup_supplier_name,
+                p.backup_unit_cost,
+                (SELECT COALESCE(SUM(ap.quantity_used), 0)
+                 FROM activity_part AS ap
+                 WHERE ap.part_id = p.part_id) AS total_quantity_used,
+                (SELECT COUNT(DISTINCT ap.job_id)
+                 FROM activity_part AS ap
+                 WHERE ap.part_id = p.part_id) AS jobs_used_in,
+                (SELECT COALESCE(SUM(pod.quantity_order), 0)
+                 FROM part_order_detail AS pod
+                 WHERE pod.part_id = p.part_id) AS total_quantity_ordered
+            FROM part AS p
+            INNER JOIN supplier AS sp
+                ON sp.supplier_id = p.primary_supplier_id
+            LEFT JOIN supplier AS sb
+                ON sb.supplier_id = p.backup_supplier_id
+            ORDER BY p.part_id
+        ";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException('Unable to retrieve parts: ' . $this->conn->error);
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

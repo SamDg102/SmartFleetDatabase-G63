@@ -12,7 +12,8 @@ class MaintenanceJob
                 v.registration_number,
                 vc.category_name,
                 m.manufacturer_name,
-                mj.workshop_id,
+                sb.bay_name,
+                sb.bay_status,
                 d.depot_name,
                 d.depot_location,
                 mj.date_opened,
@@ -59,23 +60,16 @@ class MaintenanceJob
             LEFT JOIN manufacturer AS m
                 ON m.manufacturer_id = v.manufacturer_id
 
-            INNER JOIN workshop AS w
-                ON w.workshop_id = mj.workshop_id
+            INNER JOIN service_bay AS sb
+                ON sb.service_bay_id = mj.service_bay_id
 
             INNER JOIN depot AS d
-                ON d.depot_id = w.depot_id
+                ON d.depot_id = sb.depot_id
 
             ORDER BY mj.date_opened DESC, mj.job_id DESC
         ";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException(
-                'Unable to retrieve maintenance jobs: ' . $this->conn->error
-            );
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -92,7 +86,8 @@ class MaintenanceJob
                 v.current_odometer,
                 vc.category_name,
                 m.manufacturer_name,
-                mj.workshop_id,
+                sb.service_bay_id,
+                sb.bay_name,
                 d.depot_name,
                 d.depot_location,
                 mj.date_opened,
@@ -127,13 +122,14 @@ class MaintenanceJob
             LEFT JOIN manufacturer AS m
                 ON m.manufacturer_id = v.manufacturer_id
 
-            INNER JOIN workshop AS w
-                ON w.workshop_id = mj.workshop_id
+            INNER JOIN service_bay AS sb
+                ON sb.service_bay_id = mj.service_bay_id
 
-            INNER JOIN depot AS d
-                ON d.depot_id = w.depot_id
+                INNER JOIN depot AS d
+                    ON d.depot_id = sb.depot_id
 
             WHERE mj.job_id = ?
+            
         ";
 
         $stmt = $this->prepare($sql);
@@ -266,7 +262,7 @@ class MaintenanceJob
         $sql = "
             INSERT INTO maintenance_job (
                 VIN,
-                workshop_id,
+                service_bay_id,
                 date_opened,
                 date_closed,
                 downtime_hours,
@@ -278,7 +274,7 @@ class MaintenanceJob
         $stmt = $this->prepare($sql);
 
         $vin = trim((string) $data['VIN']);
-        $workshopId = (int) $data['workshop_id'];
+        $serviceBayId = (int) $data['service_bay_id'];
         $dateOpened = (string) $data['date_opened'];
         $dateClosed = (string) $data['date_closed'];
         $downtimeHours = (string) $data['downtime_hours'];
@@ -287,7 +283,7 @@ class MaintenanceJob
         $stmt->bind_param(
             'sissss',
             $vin,
-            $workshopId,
+            $serviceBayId,
             $dateOpened,
             $dateClosed,
             $downtimeHours,
@@ -303,7 +299,7 @@ class MaintenanceJob
             UPDATE maintenance_job
             SET
                 VIN = ?,
-                workshop_id = ?,
+                service_bay_id = ?,
                 date_opened = ?,
                 date_closed = ?,
                 downtime_hours = ?,
@@ -314,7 +310,7 @@ class MaintenanceJob
         $stmt = $this->prepare($sql);
 
         $vin = trim((string) $data['VIN']);
-        $workshopId = (int) $data['workshop_id'];
+        $serviceBayId = (int) $data['service_bay_id'];
         $dateOpened = (string) $data['date_opened'];
         $dateClosed = (string) $data['date_closed'];
         $downtimeHours = (string) $data['downtime_hours'];
@@ -323,7 +319,7 @@ class MaintenanceJob
         $stmt->bind_param(
             'sissssi',
             $vin,
-            $workshopId,
+            $serviceBayId,
             $dateOpened,
             $dateClosed,
             $downtimeHours,

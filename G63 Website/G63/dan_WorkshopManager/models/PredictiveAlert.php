@@ -18,11 +18,6 @@ class PredictiveAlert
         ";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException('Unable to retrieve alerts: ' . $this->conn->error);
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

@@ -11,11 +11,6 @@ class Certification
                 ORDER BY mechanic_certification_name";
 
         $result = $this->conn->query($sql);
-
-        if ($result === false) {
-            throw new RuntimeException('Unable to retrieve certifications: ' . $this->conn->error);
-        }
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

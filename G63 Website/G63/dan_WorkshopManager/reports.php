@@ -1,9 +1,6 @@
 <?php
 
 require_once __DIR__ . '/config/db.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Workshop Reports';
 $pageCss = 'reports';
@@ -14,9 +11,7 @@ $vehicleCosts = [];
 $repeatFaults = [];
 $mechanicHours = [];
 $errorMessage = null;
-
-try {
-    $result = $conn->query("
+$result = $conn->query("
         SELECT
             job_status,
             COUNT(*) AS job_count,
@@ -33,14 +28,9 @@ try {
             'DONE'
         )
     ");
+$jobsByStatus = $result->fetch_all(MYSQLI_ASSOC);
 
-    if ($result === false) {
-        throw new RuntimeException($conn->error);
-    }
-
-    $jobsByStatus = $result->fetch_all(MYSQLI_ASSOC);
-
-    $result = $conn->query("
+$result = $conn->query("
         SELECT
             v.VIN,
             v.registration_number,
@@ -82,14 +72,9 @@ try {
         FROM vehicle AS v
         ORDER BY estimated_parts_cost DESC, total_jobs DESC
     ");
+$vehicleCosts = $result->fetch_all(MYSQLI_ASSOC);
 
-    if ($result === false) {
-        throw new RuntimeException($conn->error);
-    }
-
-    $vehicleCosts = $result->fetch_all(MYSQLI_ASSOC);
-
-    $result = $conn->query("
+$result = $conn->query("
         SELECT
             at.activity_type_name,
             COUNT(*) AS repeat_fault_count
@@ -100,18 +85,12 @@ try {
         GROUP BY at.activity_type_id, at.activity_type_name
         ORDER BY repeat_fault_count DESC, at.activity_type_name
     ");
-
-    if ($result === false) {
-        throw new RuntimeException($conn->error);
-    }
-
-    $repeatFaults = $result->fetch_all(MYSQLI_ASSOC);
-
-    $result = $conn->query("
+$repeatFaults = $result->fetch_all(MYSQLI_ASSOC);
+$result = $conn->query("
         SELECT
             m.mechanic_id,
             m.full_name,
-            COUNT(*) AS assigned_activity_count,
+            COUNT(ma.mechanic_id) AS assigned_activity_count,
             COALESCE(
                 ROUND(SUM(TIME_TO_SEC(ma.labour_hours)) / 3600, 2),
                 0
@@ -122,15 +101,7 @@ try {
         GROUP BY m.mechanic_id, m.full_name
         ORDER BY total_labour_hours DESC, m.full_name
     ");
-
-    if ($result === false) {
-        throw new RuntimeException($conn->error);
-    }
-
-    $mechanicHours = $result->fetch_all(MYSQLI_ASSOC);
-} catch (Throwable $exception) {
-    $errorMessage = $exception->getMessage();
-}
+$mechanicHours = $result->fetch_all(MYSQLI_ASSOC);
 
 $statusLabels = array_column($jobsByStatus, 'job_status');
 $statusCounts = array_map(

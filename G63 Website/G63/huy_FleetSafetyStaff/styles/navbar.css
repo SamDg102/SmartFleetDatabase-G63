@@ -1,0 +1,95 @@
+/* styles/navbar.css */
+.navbar {
+    width: var(--navbar-width, 230px);
+    flex-shrink: 0;
+    background: #000000;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    border-radius: 0 40px 40px 0;
+    z-index: 1000;
+}
+
+.logo {
+    background: #dffedf;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    border-radius: 0 40px 0 0;
+}
+
+.logo i {
+    color: #12a800;
+    padding-right: 8px;
+    font-size: 28px;
+}
+
+.logo span {
+    font-weight: 700;
+    font-size: 14px;
+    color: #12a800;
+    line-height: 1.2;
+}
+
+.navbar h1 {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 20px 20px 10px 20px;
+    color: #ffffff;
+}
+
+.navbar nav {
+    padding-top: 10px;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar li {
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.navbar li a {
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar li.activepage {
+    background: #12a800;
+}
+
+.navbar li.activepage a {
+    color: #000000;
+    font-weight: 700;
+}
+
+.navbar i {
+    color: #18d600;
+}
+
+.navbar li.activepage i {
+    color: #000000;
+}
+
+.logout {
+    padding: 20px;
+    margin-top: auto;
+}
+
+.logout a {
+    color: #18d600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
