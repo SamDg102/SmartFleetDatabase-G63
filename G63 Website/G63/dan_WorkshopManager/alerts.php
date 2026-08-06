@@ -1,10 +1,5 @@
 <?php
 require __DIR__ . '/config/db.php';
-include '../function.php';
-
-checkin('workshop manager');
-
-
 $pageTitle = 'Predictive Alerts';
 $pageCss = 'alerts';
 $currentPage = 'alerts';
@@ -19,6 +14,7 @@ JOIN alert_type
 at ON at.alert_type_id=pa.alert_type_id 
 ORDER BY pa.timestamp DESC";
 $r = $conn->query($sql);
+if (!$r) throw new RuntimeException($conn->error);
 $alerts = $r->fetch_all(MYSQLI_ASSOC);
 include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php'; ?>
