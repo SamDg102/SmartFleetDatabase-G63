@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'includes/conndb.php';
+include  '../db.php';
 
 $eventId = $_GET['event_id'] ?? 96; // Mặc định ID nếu truy cập trực tiếp
 

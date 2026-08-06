@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'includes/conndb.php';
+include  '../db.php';
 
 $jobId = $_GET['job_id'] ?? 1021;
 

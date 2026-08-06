@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'includes/conndb.php';
+include  '../db.php';
 
 // Xử lý bộ lọc
 $depot_id = $_GET['depot_id'] ?? '';

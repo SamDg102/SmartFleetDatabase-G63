@@ -1,5 +1,7 @@
 <?php
-require __DIR__ . '/config/db.php';
+require '../db.php';
+
+session_start();
 
 include '../function.php';
 

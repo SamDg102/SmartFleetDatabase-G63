@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "includes/includes.php";
+include "../db.php";
 include '../function.php';
 
 checkin('mechanic');

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once 'includes/conndb.php';
+require_once  '../db.php';
 include '../function.php';
 
 checkin('driver');
