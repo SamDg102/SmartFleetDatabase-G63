@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/models/Mechanic.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Mechanics';
 $pageCss = 'mechanics';
