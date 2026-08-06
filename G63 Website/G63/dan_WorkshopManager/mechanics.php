@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/config/db.php';
-require_once __DIR__ . '/models/Mechanic.php';
+require __DIR__ . '/config/db.php';
+require __DIR__ . '/models/Mechanic.php';
 
 $pageTitle = 'Mechanics';
 $pageCss = 'mechanics';
