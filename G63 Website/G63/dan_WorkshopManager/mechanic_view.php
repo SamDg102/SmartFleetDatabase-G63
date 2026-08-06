@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/models/Mechanic.php';
-require '../function.php';
-
-checkin('workshop manager');
 
 $pageTitle = 'Mechanic Detail';
 $pageCss = 'mechanics';
@@ -24,20 +21,16 @@ $errorMessage = null;
 if ($mechanicId === false || $mechanicId === null) {
     $errorMessage = 'A valid mechanic_id is required.';
 } else {
-    try {
-        $mechanicModel = new Mechanic($conn);
-        $mechanic = $mechanicModel->getById($mechanicId);
+    $mechanicModel = new Mechanic($conn);
+    $mechanic = $mechanicModel->getById($mechanicId);
 
-        if ($mechanic === null) {
-            $errorMessage = 'Mechanic not found.';
-        } else {
-            $certifications =
-                $mechanicModel->getCertifications($mechanicId);
-            $assignments =
-                $mechanicModel->getAssignments($mechanicId);
-        }
-    } catch (Throwable $exception) {
-        $errorMessage = $exception->getMessage();
+    if ($mechanic === null) {
+        $errorMessage = 'Mechanic not found.';
+    } else {
+        $certifications =
+            $mechanicModel->getCertifications($mechanicId);
+        $assignments =
+            $mechanicModel->getAssignments($mechanicId);
     }
 }
 
